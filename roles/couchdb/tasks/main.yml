@@ -1,0 +1,32 @@
+---
+- name: Update apt cache if needed.
+  apt: update_cache=yes cache_valid_time=86400
+  become: true
+
+- name: Get software for Erlang build of CouchDB 2.0.
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - build-essential
+    - curl
+    - erlang
+    - git
+    - libcurl4-openssl-dev
+    - libicu-dev
+    - libmozjs185-dev
+    - pkg-config
+    - python-apt
+    - python-pycurl
+    - sudo
+    - unzip
+  become: true
+
+- name: Creates directory
+  file: path=/home/debian/build state=directory
+
+- name: Clone CouchDB repository
+  git: repo=https://github.com/apache/couchdb.git dest=/home/debian/build/couchdb version=2.0.0
+
+- name: Build CouchDB
+  command: chdir=/home/debian/build/couchdb executable=configure
+
+- make: chdir=/home/debian/build/couchdb target=release

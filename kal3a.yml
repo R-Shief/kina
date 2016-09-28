@@ -21,3 +21,17 @@
 
   roles:
     - db
+
+- name: deploy RabbitMQ
+  hosts: queueservers
+  remote_user: debian
+
+  roles:
+    - rabbitmq
+
+- name: deploy CouchDB
+  hosts: couchdbservers
+  remote_user: debian
+
+  roles:
+    - couchdb
