@@ -30,7 +30,7 @@
     - rabbitmq
 
 - name: deploy CouchDB
-  hosts: couchdbservers
+  hosts: tag_db_couchdb
   remote_user: debian
 
   roles:

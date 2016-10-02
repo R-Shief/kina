@@ -73,7 +73,7 @@
     - name: couchdb servers
       ec2:
         key_name: baba
-        instance_type: m1.small
+        instance_type: m3.xlarge
         image: emi-2a255279
         instance_tags:
           db: couchdb
@@ -83,9 +83,14 @@
         group:
           - default
           - couchdb
+        monitoring: true
         volumes:
-          - device_name: sdb
-            volume_size: 10
+          - device_name: /dev/sda
+            volume_size: 15
+            delete_on_termination: true
+          - device_name: /dev/vdb
+            volume_size: 100
+            delete_on_termination: true
         wait: true
       register: ec2
 

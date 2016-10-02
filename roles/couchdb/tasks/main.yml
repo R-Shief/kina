@@ -1,4 +1,19 @@
 ---
+- name: Support https sources
+  apt: name=apt-transport-https state=installed
+  become: true
+
+- name: Add nodesource GPG key to debian
+  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key id=1655A0AB68576280
+  become: true
+
+- name: Add nodesource sources to apt.
+  apt_repository: repo='{{ item }}' state=present filename='nodesource'
+  with_items:
+    - deb https://deb.nodesource.com/node_4.x jessie main
+    - deb-src https://deb.nodesource.com/node_4.x jessie main
+  become: true
+
 - name: Update apt cache if needed.
   apt: update_cache=yes cache_valid_time=86400
   become: true
@@ -18,6 +33,7 @@
     - python-pycurl
     - sudo
     - unzip
+    - nodejs
   become: true
 
 - name: Creates directory
@@ -27,6 +43,6 @@
   git: repo=https://github.com/apache/couchdb.git dest=/home/debian/build/couchdb version=2.0.0
 
 - name: Build CouchDB
-  command: chdir=/home/debian/build/couchdb executable=configure
+  command: ./configure --disable-docs chdir=/home/debian/build/couchdb
 
 - make: chdir=/home/debian/build/couchdb target=release

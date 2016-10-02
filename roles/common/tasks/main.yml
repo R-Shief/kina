@@ -1,13 +1,2 @@
 ---
-- name: Get software for Python-based control.
-  apt: "name={{ item }} state=installed"
-  with_items:
-    - curl
-    - python-apt
-    - python-pycurl
-    - build-essential
-    - pkg-config
-    - erlang
-    - sudo
-    - unzip
-  become: true
+- include: init-debian.yml
