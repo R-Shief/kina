@@ -3,46 +3,218 @@
   apt: name=apt-transport-https state=installed
   become: true
 
-- name: Add nodesource GPG key to debian
-  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key id=1655A0AB68576280
-  become: true
+#- name: Add nodesource GPG key to debian
+#  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key id=1655A0AB68576280
+#  become: true
+#
+#- name: Add nodesource sources to apt.
+#  apt_repository: repo='{{ item }}' state=present filename='nodesource'
+#  with_items:
+#    - deb https://deb.nodesource.com/node_4.x jessie main
+#    - deb-src https://deb.nodesource.com/node_4.x jessie main
+#  become: true
 
-- name: Add nodesource sources to apt.
-  apt_repository: repo='{{ item }}' state=present filename='nodesource'
-  with_items:
-    - deb https://deb.nodesource.com/node_4.x jessie main
-    - deb-src https://deb.nodesource.com/node_4.x jessie main
-  become: true
+#- name: Add erlang to apt.
+#  apt_repository: repo='{{ item }}' state=present filename='erlang-solutions'
+#  with_items:
+#    - deb https://packages.erlang-solutions.com/debian jessie contrib
+#  become: true
+
+#- name: Add erlang GPG key to debian
+#  apt_key: url=https://packages.erlang-solutions.com/debian/erlang_solutions.asc id=434975BD900CCBE4F7EE1B1ED208507CA14F4FCA
+#  become: true
 
 - name: Update apt cache if needed.
   apt: update_cache=yes cache_valid_time=86400
   become: true
 
-- name: Get software for Erlang build of CouchDB 2.0.
-  apt: "name={{ item }} state=installed"
-  with_items:
-    - build-essential
-    - curl
-    - erlang
-    - git
-    - libcurl4-openssl-dev
-    - libicu-dev
-    - libmozjs185-dev
-    - pkg-config
-    - python-apt
-    - python-pycurl
-    - sudo
-    - unzip
-    - nodejs
-  become: true
-
 - name: Creates directory
   file: path=/home/debian/build state=directory
 
-- name: Clone CouchDB repository
-  git: repo=https://github.com/apache/couchdb.git dest=/home/debian/build/couchdb version=2.0.0
+- name: downloads custom couchdb deb
+  get_url:
+    dest: /home/debian/build
+    url: https://clc.aristotle.ucsb.edu:8773/services/objectstorage/kal3a-debs/couchdb-2.0.0-2.deb
+    validate_certs: no
 
-- name: Build CouchDB
-  command: ./configure --disable-docs chdir=/home/debian/build/couchdb
+- name: installs custom couchdb deb
+  apt:
+    deb: /home/debian/build/couchdb-2.0.0-2.deb
+  become: true
 
-- make: chdir=/home/debian/build/couchdb target=release
+- name: mount devices
+  mount:
+    name: /opt/couchdb/data
+    src: /dev/vdb
+    fstype: ext3
+    state: mounted
+  become: true
+
+#- name: Get software for Erlang build of CouchDB 2.0.
+#  apt: "name={{ item }} state=installed"
+#  with_items:
+#    - erlang
+#    - git
+#    - libcurl4-openssl-dev
+#    - libicu-dev
+#    - libmozjs185-dev
+#    - pkg-config
+#    - libcerf-doc
+#  become: true
+
+#- name: Clone CouchDB repository
+#  git: repo=https://github.com/apache/couchdb.git dest=/home/debian/build/couchdb version=2.0.0
+#
+#- name: Build CouchDB
+#  command: ./configure --disable-docs --disable-fauxton chdir=/home/debian/build/couchdb creates=install.mk
+#
+#- make: chdir=/home/debian/build/couchdb target=release
+
+- name: set up init scripts
+  copy:
+    content: |
+      #!/bin/sh -e
+
+      # Licensed under the Apache License, Version 2.0 (the "License"); you may not
+      # use this file except in compliance with the License. You may obtain a copy of
+      # the License at
+      #
+      #   http://www.apache.org/licenses/LICENSE-2.0
+      #
+      # Unless required by applicable law or agreed to in writing, software
+      # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+      # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+      # License for the specific language governing permissions and limitations under
+      # the License.
+
+      ### BEGIN INIT INFO
+      # Provides:          couchdb
+      # Required-Start:    $local_fs $remote_fs
+      # Required-Stop:     $local_fs $remote_fs
+      # Default-Start:     2 3 4 5
+      # Default-Stop:      0 1 6
+      # Short-Description: Apache CouchDB init script
+      # Description:       Apache CouchDB init script for the database server.
+      ### END INIT INFO
+
+      SCRIPT_OK=0
+      SCRIPT_ERROR=1
+
+      DESCRIPTION="database server"
+      NAME=couchdb
+      SCRIPT_NAME=`basename $0`
+      COUCHDB=/opt/couchdb/bin/couchdb
+      CONFIGURATION_FILE=/etc/default/couchdb
+      RUN_DIR=/opt/couchdb/var/run
+      LSB_LIBRARY=/lib/lsb/init-functions
+
+      if test ! -x $COUCHDB; then
+          exit $SCRIPT_ERROR
+      fi
+
+      if test -r $CONFIGURATION_FILE; then
+          . $CONFIGURATION_FILE
+      fi
+
+      log_daemon_msg () {
+          # Dummy function to be replaced by LSB library.
+
+          echo $@
+      }
+
+      log_end_msg () {
+          # Dummy function to be replaced by LSB library.
+
+          if test "$1" != "0"; then
+            echo "Error with $DESCRIPTION: $NAME"
+          fi
+          return $1
+      }
+
+      if test -r $LSB_LIBRARY; then
+          . $LSB_LIBRARY
+      fi
+
+      start_couchdb () {
+          # Start Apache CouchDB as a background process.
+
+          mkdir -p "$RUN_DIR"
+          if test -n "$COUCHDB_USER"; then
+              chown $COUCHDB_USER:$COUCHDB_GROUP "$RUN_DIR"
+          fi
+          command="$COUCHDB"
+          start-stop-daemon --start --quiet --make-pidfile --pidfile /opt/couchdb/var/run/couchdb.pid --chuid $COUCHDB_USER:$COUCHDB_GROUP --background --chdir /opt/couchdb --exec $command
+      }
+
+      stop_couchdb () {
+          # Stop the running Apache CouchDB process.
+
+          start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile /opt/couchdb/var/run/couchdb.pid --remove-pidfile $COUCHDB
+      }
+
+      parse_script_option_list () {
+          # Parse arguments passed to the script and take appropriate action.
+
+          case "$1" in
+              start)
+                  log_daemon_msg "Starting $DESCRIPTION" $NAME
+                  if start_couchdb; then
+                      log_end_msg $SCRIPT_OK
+                  else
+                      log_end_msg $SCRIPT_ERROR
+                  fi
+                  ;;
+              stop)
+                  log_daemon_msg "Stopping $DESCRIPTION" $NAME
+                  if stop_couchdb; then
+                      log_end_msg $SCRIPT_OK
+                  else
+                      log_end_msg $SCRIPT_ERROR
+                  fi
+                  ;;
+              restart)
+                  log_daemon_msg "Restarting $DESCRIPTION" $NAME
+                  if stop_couchdb; then
+                      if start_couchdb; then
+                          log_end_msg $SCRIPT_OK
+                      else
+                          log_end_msg $SCRIPT_ERROR
+                      fi
+                  else
+                      log_end_msg $SCRIPT_ERROR
+                  fi
+                  ;;
+              status)
+                  display_status
+                  ;;
+              *)
+                  cat << EOF >&2
+      Usage: $SCRIPT_NAME {start|stop|restart|status}
+      EOF
+                  exit $SCRIPT_ERROR
+                  ;;
+          esac
+      }
+
+      parse_script_option_list $@
+    dest: /etc/init.d/couchdb
+    owner: root
+    group: root
+    mode: 755
+  become: true
+
+- copy:
+    content: |
+      # Sourced by init script for configuration.
+
+      COUCHDB_USER=couchdb
+      COUCHDB_GROUP=couchdb
+      COUCHDB_STDOUT_FILE=/dev/null
+      COUCHDB_STDERR_FILE=/dev/null
+      COUCHDB_RESPAWN_TIMEOUT=5
+      COUCHDB_OPTIONS=
+    dest: /etc/default/couchdb
+    owner: root
+    group: root
+    mode: 644
+  become: true
