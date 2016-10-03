@@ -1,0 +1,11 @@
+---
+- name: Add nodesource GPG key to debian
+  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key id=1655A0AB68576280
+  become: true
+
+- name: Add nodesource sources to apt.
+  apt_repository: repo='{{ item }}' state=present filename='nodesource'
+  with_items:
+    - deb https://deb.nodesource.com/node_4.x jessie main
+    - deb-src https://deb.nodesource.com/node_4.x jessie main
+  become: true

@@ -1,0 +1,10 @@
+---
+- name: Add rabbitmq GPG key to debian
+  apt_key: url=https://www.rabbitmq.com/rabbitmq-release-signing-key.asc id=0A9AF2115F4687BD29803A206B73A36E6026DFCA
+  become: true
+
+- name: Add rabbitmq sources to apt.
+  apt_repository: repo='{{ item }}' state=present filename='rabbitmq'
+  with_items:
+    - deb http://www.rabbitmq.com/debian/ testing main
+  become: true

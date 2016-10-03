@@ -1,0 +1,20 @@
+---
+- include: rabbitmq-sources.yml
+  when:
+    - rabbitmq is defined
+    - rabbitmq
+
+- include: nodejs-sources.yml
+  when:
+    - nodejs is defined
+    - nodejs
+
+- include: erlang-sources.yml
+  when:
+    - erlang is defined
+    - erlang
+
+- include: erlang-sources.yml
+  when:
+    - dotdeb is defined
+    - dotdeb

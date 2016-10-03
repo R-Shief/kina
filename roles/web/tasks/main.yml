@@ -1,15 +1,4 @@
 ---
-- name: Add dotdeb GPG key to debian
-  apt_key: url=https://www.dotdeb.org/dotdeb.gpg id=7E3F070089DF5277
-  become: true
-
-- name: Add dotdeb sources to apt.
-  apt_repository: repo='{{ item }}' state=present filename='dotdeb'
-  with_items:
-    - deb http://packages.dotdeb.org jessie all
-    - deb-src http://packages.dotdeb.org jessie all
-  become: true
-
 - name: Install PHP and Apache2
   apt: "name={{ item }} state=installed"
   with_items:

@@ -1,34 +1,20 @@
 ---
+- name: waiting for ssh
+  local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH
+
+- name: format devices
+  filesystem: fstype=ext3 dev=/dev/vdb
+  become: true
+
 - name: Support https sources
   apt: name=apt-transport-https state=installed
   become: true
-
-#- name: Add nodesource GPG key to debian
-#  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key id=1655A0AB68576280
-#  become: true
-#
-#- name: Add nodesource sources to apt.
-#  apt_repository: repo='{{ item }}' state=present filename='nodesource'
-#  with_items:
-#    - deb https://deb.nodesource.com/node_4.x jessie main
-#    - deb-src https://deb.nodesource.com/node_4.x jessie main
-#  become: true
 
 - name: Add runit
   apt: "name={{ item }} state=installed"
   with_items:
     - runit
   become: true
-
-#- name: Add erlang to apt.
-#  apt_repository: repo='{{ item }}' state=present filename='erlang-solutions'
-#  with_items:
-#    - deb https://packages.erlang-solutions.com/debian jessie contrib
-#  become: true
-
-#- name: Add erlang GPG key to debian
-#  apt_key: url=https://packages.erlang-solutions.com/debian/erlang_solutions.asc id=434975BD900CCBE4F7EE1B1ED208507CA14F4FCA
-#  become: true
 
 - name: Update apt cache if needed.
   apt: update_cache=yes cache_valid_time=86400

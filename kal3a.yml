@@ -1,6 +1,13 @@
 ---
 # This playbook deploys the whole application stack in this site.
 
+- hosts: localhost:!all
+  connection: local
+  vars_files:
+    - vars.yml
+  roles:
+    - eucalyptus
+
 - name: apply common configuration to all nodes
   hosts: all
   remote_user: debian
@@ -13,35 +20,40 @@
   remote_user: debian
 
   roles:
-    - web
+    - role: debian
+      dotdeb: true
+    - role: web
 
 - name: deploy MySQL and configure the databases
   hosts: dbservers
   remote_user: debian
 
   roles:
-    - db
+    - role: db
 
 - name: deploy RabbitMQ
   hosts: tag_queue_rabbitmq
   remote_user: debian
 
   roles:
+    - role: debian
+      rabbitmq: true
+      erlang: true
     - role: rabbitmq
-    - role: Mayeu.RabbitMQ
-      rabbitmq_os_package: true
-      rabbitmq_plugins:
-        - rabbitmq_management
-      rabbitmq_vhost_definitions:
-        - name: kal3a
-      rabbitmq_users_definitions:
-        - vhost:    kal3a
-          user:     admin
-          password: admin
-          tags:
-            - administrator
-      rabbitmq_ssl: false
-      become: true
+#    - role: Mayeu.RabbitMQ
+#      rabbitmq_os_package: true
+#      rabbitmq_plugins:
+#        - rabbitmq_management
+#      rabbitmq_vhost_definitions:
+#        - name: kal3a
+#      rabbitmq_users_definitions:
+#        - vhost:    kal3a
+#          user:     admin
+#          password: admin
+#          tags:
+#            - administrator
+#      rabbitmq_ssl: false
+#      become: true
 
 - name: deploy CouchDB
   hosts: tag_db_couchdb
