@@ -1,4 +1,8 @@
 ---
+- name: Support https sources
+  apt: name=apt-transport-https state=installed
+  become: true
+
 - name: Add rabbitmq GPG key to debian
   apt_key: url=https://www.rabbitmq.com/rabbitmq-release-signing-key.asc id=0A9AF2115F4687BD29803A206B73A36E6026DFCA
   become: true
@@ -9,15 +13,12 @@
     - deb http://www.rabbitmq.com/debian/ testing main
   become: true
 
-- name: Install RabbitMQ
-  apt: "name={{ item }} state=installed"
+- name: Add erlang to apt.
+  apt_repository: repo='{{ item }}' state=present filename='erlang-solutions'
   with_items:
-    - rabbitmq-server
+    - deb https://packages.erlang-solutions.com/debian jessie contrib
   become: true
 
-- name: Install RabbitMQ Management plugin
-  command: rabbitmq-plugins enable {{ item }}
-  with_items:
-    - rabbitmq_management
+- name: Add erlang GPG key to debian
+  apt_key: url=https://packages.erlang-solutions.com/debian/erlang_solutions.asc id=434975BD900CCBE4F7EE1B1ED208507CA14F4FCA
   become: true
-  notify: restart rabbitmq-server

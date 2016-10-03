@@ -23,11 +23,25 @@
     - db
 
 - name: deploy RabbitMQ
-  hosts: queueservers
+  hosts: tag_queue_rabbitmq
   remote_user: debian
 
   roles:
-    - rabbitmq
+    - role: rabbitmq
+    - role: Mayeu.RabbitMQ
+      rabbitmq_os_package: true
+      rabbitmq_plugins:
+        - rabbitmq_management
+      rabbitmq_vhost_definitions:
+        - name: kal3a
+      rabbitmq_users_definitions:
+        - vhost:    kal3a
+          user:     admin
+          password: admin
+          tags:
+            - administrator
+      rabbitmq_ssl: false
+      become: true
 
 - name: deploy CouchDB
   hosts: tag_db_couchdb

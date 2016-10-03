@@ -98,6 +98,31 @@
       add_host: groups=tag_db_couchdb name={{ item.public_dns_name }}
       with_items: '{{ ec2.instances }}'
 
+    - name: rabbitmq servers
+      ec2:
+        key_name: baba
+        instance_type: m3.xlarge
+        image: emi-2a255279
+        instance_tags:
+          queue: rabbitmq
+        count_tag:
+          queue: rabbitmq
+        exact_count: 1
+        group:
+          - default
+          - rabbitmq
+        monitoring: true
+        volumes:
+          - device_name: /dev/sda
+            volume_size: 15
+            delete_on_termination: true
+        wait: true
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host: groups=tag_queue_rabbitmq name={{ item.public_dns_name }}
+      with_items: '{{ ec2.instances }}'
+
 - name: configure couchdb
   hosts: tag_db_couchdb
   remote_user: debian
