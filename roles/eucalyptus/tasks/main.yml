@@ -73,6 +73,12 @@
         to_port: 9200
         cidr_ip: 0.0.0.0/16
 
+- name: security group worker
+  ec2_group:
+    name: worker
+    description: opens worker ports
+    rules: []
+
 - name: couchdb servers
   ec2:
     key_name: baba
@@ -152,6 +158,31 @@
 
 - name: Add new instance to host group
   add_host: groups=tag_index_elasticsearch name={{ item.public_dns_name }}
+  with_items: '{{ ec2.instances }}'
+
+- name: streaming workers
+  ec2:
+    key_name: baba
+    instance_type: m1.small
+    image: emi-2a255279
+    instance_tags:
+      worker: streaming
+    count_tag:
+      worker: streaming
+    group:
+      - default
+      - worker
+    exact_count: 1
+    monitoring: true
+    volumes:
+      - device_name: /dev/sda
+        volume_size: 5
+        delete_on_termination: true
+    wait: true
+  register: ec2
+
+- name: Add new instance to host group
+  add_host: groups=tag_worker_streaming name={{ item.public_dns_name }}
   with_items: '{{ ec2.instances }}'
 
 - command: ./ec2.py --refresh-cache

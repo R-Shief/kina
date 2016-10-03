@@ -1,0 +1,80 @@
+---
+- name: Install PHP
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - php7.0-cli
+    - php7.0-bcmath
+    - php7.0-mbstring
+    - php7.0-xml
+  become: true
+
+- name: Install git
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - git
+  become: true
+
+- name: guarantee build dir
+  file:
+    state: directory
+    path: /home/debian/build
+
+- name: guarantee bin dir
+  file:
+    state: directory
+    path: /home/debian/bin
+
+- name: clone kal3a
+  git:
+    repo: https://github.com/R-Shief/kal3a.git
+    dest: /home/debian/build/kal3a
+    version: develop
+
+- stat: path=/home/debian/bin/composer
+  register: has_composer
+
+- name: create composer script
+  copy:
+    content: |
+      #!/bin/sh
+
+      EXPECTED_SIGNATURE=$(wget https://composer.github.io/installer.sig -O - -q)
+      php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+      ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');")
+
+      if [ "$EXPECTED_SIGNATURE" = "$ACTUAL_SIGNATURE" ]
+      then
+          php composer-setup.php --quiet
+          RESULT=$?
+          rm composer-setup.php
+          exit $RESULT
+      else
+          >&2 echo 'ERROR: Invalid installer signature'
+          rm composer-setup.php
+          exit 1
+      fi
+    dest: /home/debian/bin/composer-bootstrap.sh
+    mode: 0755
+  when: not has_composer.stat.exists
+
+- name: download composer
+  command: /home/debian/bin/composer-bootstrap.sh chdir=/home/debian/bin creates=/home/debian/bin/composer.phar
+  when: not has_composer.stat.exists
+
+- name: delete bootstrap script
+  file:
+    state: absent
+    path: /home/debian/bin/composer-bootstrap.sh
+  when: not has_composer.stat.exists
+
+- name: rename composer
+  command: mv /home/debian/bin/composer.phar /home/debian/bin/composer
+  when: not has_composer.stat.exists
+
+- name: install kal3a dependencies
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/home/debian/bin"
+    SYMFONY_ENV: prod
+  composer:
+    command: install
+    working_dir: /home/debian/build/kal3a
