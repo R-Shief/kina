@@ -1,0 +1,20 @@
+---
+- name: Install MySQL
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - mysql-server
+    - python-mysqldb
+  become: true
+
+- lineinfile:
+    dest: /etc/mysql/my.cnf
+    regexp: 'bind-address'
+    line: "bind-address = {{ hostvars[ansible_ssh_host]['ec2_private_ip_address'] }}"
+  become: true
+  notify: restart mysql
+
+- mysql_db: name=kal3a login_user=root state=present
+- mysql_user: name=kal3a password=kal3a host_all=yes login_user=root priv=kal3a.*:ALL state=present
+
+- include: handlers/main.yml
+

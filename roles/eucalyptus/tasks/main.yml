@@ -73,6 +73,16 @@
         to_port: 9200
         cidr_ip: 10.1.3.0/24
 
+- name: security group mysql
+  ec2_group:
+    name: mysql
+    description: services supporting runtime and admin of mysql
+    rules:
+      - proto: tcp
+        from_port: 3306
+        to_port: 3306
+        cidr_ip: 10.1.3.0/24
+
 - name: security group worker
   ec2_group:
     name: worker
@@ -183,6 +193,31 @@
 
 - name: Add new instance to host group
   add_host: groups=tag_worker_streaming name={{ item.public_dns_name }}
+  with_items: '{{ ec2.instances }}'
+
+- name: mysql database
+  ec2:
+    key_name: baba
+    instance_type: m1.small
+    image: emi-2a255279
+    instance_tags:
+      db: mysql
+    count_tag:
+      db: mysql
+    group:
+      - default
+      - mysql
+    exact_count: 1
+    monitoring: true
+    volumes:
+      - device_name: /dev/sda
+        volume_size: 5
+        delete_on_termination: true
+    wait: true
+  register: ec2
+
+- name: Add new instance to host group
+  add_host: groups=tag_db_mysql name={{ item.public_dns_name }}
   with_items: '{{ ec2.instances }}'
 
 - command: ./ec2.py --refresh-cache
