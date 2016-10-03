@@ -45,19 +45,6 @@
       rabbitmq: true
       erlang: true
     - role: rabbitmq
-#    - role: Mayeu.RabbitMQ
-#      rabbitmq_os_package: true
-#      rabbitmq_plugins:
-#        - rabbitmq_management
-#      rabbitmq_vhost_definitions:
-#        - name: kal3a
-#      rabbitmq_users_definitions:
-#        - vhost:    kal3a
-#          user:     admin
-#          password: admin
-#          tags:
-#            - administrator
-#      rabbitmq_ssl: false
       become: true
 
 - name: deploy CouchDB
@@ -70,9 +57,18 @@
 
 - name: deploy Elasticsearch
   hosts: tag_index_elasticsearch
-  gather_facts: no
   remote_user: debian
   roles:
     - role: debian
       elastic: true
+    - role: ansiblebit.oracle-java
+      oracle_java_set_as_default: yes
     - role: elasticsearch
+
+- name: deploy worker
+  hosts: tag_worker_streaming
+  remote_user: debian
+  roles:
+    - role: debian
+      dotdeb: true
+    - role: worker

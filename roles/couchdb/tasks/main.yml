@@ -65,6 +65,14 @@
     path: /etc/service/couchdb
   become: true
 
+- ini_file: dest=/opt/couchdb/etc/local.ini
+            section=chttpd
+            option=bind_address
+            value='{{ hostvars[ansible_ssh_host]['ec2_private_ip_address'] }}'
+            backup=yes
+  notify: restart couchdb
+  become: true
+
 #- name: Get software for Erlang build of CouchDB 2.0.
 #  apt: "name={{ item }} state=installed"
 #  with_items:

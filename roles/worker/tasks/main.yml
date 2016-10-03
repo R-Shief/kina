@@ -6,6 +6,7 @@
     - php7.0-bcmath
     - php7.0-mbstring
     - php7.0-xml
+    - php7.0-mysql
   become: true
 
 - name: Install git
