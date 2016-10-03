@@ -27,7 +27,7 @@
         to_port: 443
         cidr_ip: 0.0.0.0/0
 
-- name: security group www
+- name: security group couchdb
   ec2_group:
     name: couchdb
     description: couchdb servers
@@ -41,7 +41,7 @@
         to_port: 5984
         cidr_ip: 0.0.0.0/16
 
-- name: security group www
+- name: security group rabbitmq
   ec2_group:
     name: rabbitmq
     description: services supporting runtime and admin of rabbitmq
@@ -61,6 +61,16 @@
       - proto: tcp
         from_port: 25672
         to_port: 25672
+        cidr_ip: 0.0.0.0/16
+
+- name: security group elasticsearch
+  ec2_group:
+    name: elasticsearch
+    description: services supporting runtime and admin of elasticsearch
+    rules:
+      - proto: tcp
+        from_port: 9200
+        to_port: 9200
         cidr_ip: 0.0.0.0/16
 
 - name: couchdb servers
@@ -115,3 +125,33 @@
 - name: Add new instance to host group
   add_host: groups=tag_queue_rabbitmq name={{ item.public_dns_name }}
   with_items: '{{ ec2.instances }}'
+
+- name: elasticsearch servers
+  ec2:
+    key_name: baba
+    instance_type: m3.xlarge
+    image: emi-2a255279
+    instance_tags:
+      index: elasticsearch
+    count_tag:
+      index: elasticsearch
+    exact_count: 1
+    group:
+      - default
+      - elasticsearch
+    monitoring: true
+    volumes:
+      - device_name: /dev/sda
+        volume_size: 15
+        delete_on_termination: true
+      - device_name: /dev/vdb
+        volume_size: 100
+        delete_on_termination: true
+    wait: true
+  register: ec2
+
+- name: Add new instance to host group
+  add_host: groups=tag_index_elasticsearch name={{ item.public_dns_name }}
+  with_items: '{{ ec2.instances }}'
+
+- command: ./ec2.py --refresh-cache

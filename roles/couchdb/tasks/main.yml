@@ -6,10 +6,6 @@
   filesystem: fstype=ext3 dev=/dev/vdb
   become: true
 
-- name: Support https sources
-  apt: name=apt-transport-https state=installed
-  become: true
-
 - name: Add runit
   apt: "name={{ item }} state=installed"
   with_items:

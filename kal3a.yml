@@ -3,6 +3,7 @@
 
 - hosts: localhost:!all
   connection: local
+  gather_facts: no
   vars_files:
     - vars.yml
   roles:
@@ -10,6 +11,7 @@
 
 - name: apply common configuration to all nodes
   hosts: all
+  gather_facts: no
   remote_user: debian
 
   roles:
@@ -17,6 +19,7 @@
 
 - name: configure and deploy the webservers and application code
   hosts: webservers
+  gather_facts: no
   remote_user: debian
 
   roles:
@@ -26,6 +29,7 @@
 
 - name: deploy MySQL and configure the databases
   hosts: dbservers
+  gather_facts: no
   remote_user: debian
 
   roles:
@@ -33,6 +37,7 @@
 
 - name: deploy RabbitMQ
   hosts: tag_queue_rabbitmq
+  gather_facts: no
   remote_user: debian
 
   roles:
@@ -53,11 +58,21 @@
 #          tags:
 #            - administrator
 #      rabbitmq_ssl: false
-#      become: true
+      become: true
 
 - name: deploy CouchDB
   hosts: tag_db_couchdb
+  gather_facts: no
   remote_user: debian
 
   roles:
     - couchdb
+
+- name: deploy Elasticsearch
+  hosts: tag_index_elasticsearch
+  gather_facts: no
+  remote_user: debian
+  roles:
+    - role: debian
+      elastic: true
+    - role: elasticsearch

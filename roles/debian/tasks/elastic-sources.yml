@@ -1,0 +1,10 @@
+---
+- name: Add elastic GPG key to debian
+  apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch id=d27d666cd88e42b4
+  become: true
+
+- name: Add elastic sources to apt.
+  apt_repository: repo='{{ item }}' state=present filename='elastic'
+  with_items:
+    - deb https://packages.elastic.co/elasticsearch/2.x/debian stable main
+  become: true

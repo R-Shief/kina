@@ -1,4 +1,8 @@
 ---
+- name: Support https sources
+  apt: name=apt-transport-https state=installed
+  become: true
+
 - include: rabbitmq-sources.yml
   when:
     - rabbitmq is defined
@@ -18,3 +22,8 @@
   when:
     - dotdeb is defined
     - dotdeb
+
+- include: elastic-sources.yml
+  when:
+    - elastic is defined
+    - elastic
