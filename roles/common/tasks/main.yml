@@ -11,5 +11,3 @@
     name: "Build hosts file"
     when: hostvars[item].ec2_private_ip_address is defined
     become: true
-
-  - debug: var=hostvars
