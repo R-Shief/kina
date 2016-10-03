@@ -18,7 +18,7 @@
     - erlang is defined
     - erlang
 
-- include: erlang-sources.yml
+- include: dotdeb-sources.yml
   when:
     - dotdeb is defined
     - dotdeb
