@@ -9,7 +9,6 @@
     - curl
     - python-apt
     - python-pycurl
-    - build-essential
     - sudo
     - unzip
   become: true
