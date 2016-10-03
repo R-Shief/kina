@@ -6,13 +6,13 @@
   filesystem: fstype=ext3 dev=/dev/vdb
   become: true
 
-#- name: mount devices
-#  mount:
-#    name: /opt/couchdb
-#    src: /dev/vdb
-#    fstype: ext3
-#    state: mounted
-#  become: true
+- name: mount devices
+  mount:
+    name: /var/lib/elasticsearch
+    src: /dev/vdb
+    fstype: ext3
+    state: mounted
+  become: true
 
 - name: Install Elasticsearch
   apt: "name={{ item }} state=installed"
