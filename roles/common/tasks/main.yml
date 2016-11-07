@@ -6,7 +6,7 @@
 # Inspired from http://xmeblog.blogspot.com/2013/06/ansible-dynamicaly-update-etchosts.html
 
 - block:
-  - lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ec2_private_ip_address }} {{hostvars[item].ec2_private_dns_name}}" state=present
+  - lineinfile: dest=/etc/hosts line='{{ hostvars[item].ec2_private_ip_address }} {{hostvars[item].ec2_private_dns_name}} {{hostvars[item].ec2_private_dns_name | replace(".eucalyptus.internal", "") }} {{ hostvars[item].ec2_tag_service | default("") }}' state=present
     with_items: '{{ groups[''all''] }}'
     name: "Build hosts file"
     when: hostvars[item].ec2_private_ip_address is defined
