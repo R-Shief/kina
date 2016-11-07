@@ -7,7 +7,17 @@
       - proto: icmp
         from_port: -1
         to_port: -1
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 10.1.3.0/24
+
+- name: security group gateway
+  ec2_group:
+    name: gateway
+    description: gateway group
+    rules:
       - proto: tcp
         from_port: 22
         to_port: 22
@@ -88,6 +98,30 @@
     name: worker
     description: opens worker ports
     rules: []
+
+
+- name: gateway
+  ec2:
+    key_name: baba
+    instance_type: m1.small
+    image: emi-2a255279
+    instance_tags:
+      gateway: true
+    count_tag:
+      gateway: true
+    exact_count: 1
+    group:
+      - gateway
+    monitoring: true
+    volumes:
+      - device_name: /dev/sda
+        volume_size: 5
+        delete_on_termination: true
+    wait: true
+  register: ec2
+
+- add_host: groups=tag_gateway_True name={{ item.public_dns_name }}
+  with_items: '{{ ec2.instances }}'
 
 - name: couchdb servers
   ec2:

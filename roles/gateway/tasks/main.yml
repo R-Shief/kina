@@ -1,0 +1,15 @@
+---
+- apt: update_cache=yes
+  become: true
+
+- apt: name={{ item }}
+  with_items:
+    - python-pip
+    - rsync
+    - ntp
+  become: true
+
+- pip: name=ansible
+  become: true
+
+- synchronize: src={{ playbook_dir }} dest={{ ansible_env['HOME'] }}
