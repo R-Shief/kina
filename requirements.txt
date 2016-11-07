@@ -1,2 +1,0 @@
-- ansiblebit.launchpad-ppa-webupd8, v3.9.4
-- ansiblebit.oracle-java, v4.14.2

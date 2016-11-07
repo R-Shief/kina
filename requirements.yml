@@ -1,0 +1,2 @@
+- src: ansiblebit.oracle-java
+- src: https://github.com/cspicer/ansible-runit
