@@ -12,4 +12,9 @@
 - pip: name=ansible
   become: true
 
-- synchronize: src={{ playbook_dir }} dest={{ ansible_env['HOME'] }}
+- synchronize:
+    src: "{{ playbook_dir }}"
+    dest: "{{ ansible_env['HOME'] }}"
+    delete: true
+    rsync_opts:
+      - "--exclude=vendor_roles"
