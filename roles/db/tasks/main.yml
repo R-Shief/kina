@@ -14,6 +14,7 @@
   notify: restart mysql
 
 - mysql_db: name=kal3a login_user=root state=present
+- mysql_user: name=kal3a password=kal3a host=10.1.3.% login_user=root priv=kal3a.*:ALL state=present
 - mysql_user: name=kal3a password=kal3a host_all=yes login_user=root priv=kal3a.*:ALL state=present
 
 - include: handlers/main.yml
