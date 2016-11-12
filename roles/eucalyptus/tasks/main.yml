@@ -107,6 +107,7 @@
     image: emi-2a255279
     instance_tags:
       gateway: true
+      service: gateway
     count_tag:
       gateway: true
     exact_count: 1
@@ -130,6 +131,7 @@
     image: emi-2a255279
     instance_tags:
       db: couchdb
+      service: couchdb
     count_tag:
       db: couchdb
     exact_count: 1
@@ -158,6 +160,7 @@
     image: emi-2a255279
     instance_tags:
       queue: rabbitmq
+      service: rabbitmq
     count_tag:
       queue: rabbitmq
     exact_count: 1
@@ -183,6 +186,7 @@
     image: emi-2a255279
     instance_tags:
       index: elasticsearch
+      service: elasticsearch
     count_tag:
       index: elasticsearch
     exact_count: 1
@@ -236,6 +240,7 @@
     image: emi-2a255279
     instance_tags:
       db: mysql
+      service: mysql
     count_tag:
       db: mysql
     group:
