@@ -50,6 +50,10 @@
         from_port: 5984
         to_port: 5984
         cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 4369
+        to_port: 4369
+        cidr_ip: 10.1.3.0/24
 
 - name: security group rabbitmq
   ec2_group:
