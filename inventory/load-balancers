@@ -1,0 +1,5 @@
+[couchdb-lb]
+couchdb-000480113801.lb.cloud.aristotle.ucsb.edu
+
+[elasticsearch-lb]
+elasticsearch-000480113801.lb.cloud.aristotle.ucsb.edu
