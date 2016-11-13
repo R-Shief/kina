@@ -262,5 +262,3 @@
   add_host: groups=tag_db_mysql name={{ item.public_dns_name }}
   with_items: '{{ ec2.instances }}'
 
-
-- command: ./ec2.py --refresh-cache
