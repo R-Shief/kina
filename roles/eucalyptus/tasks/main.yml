@@ -122,7 +122,6 @@
       - device_name: /dev/sda
         volume_size: 5
         delete_on_termination: true
-    wait: true
   register: ec2
 
 - add_host: groups=tag_gateway_True name={{ item.public_dns_name }}
@@ -150,7 +149,6 @@
       - device_name: /dev/vdb
         volume_size: 100
         delete_on_termination: true
-    wait: true
   register: ec2
 
 - name: Add new instance to host group
@@ -176,7 +174,6 @@
       - device_name: /dev/sda
         volume_size: 15
         delete_on_termination: true
-    wait: true
   register: ec2
 
 - name: Add new instance to host group
@@ -205,7 +202,6 @@
       - device_name: /dev/vdb
         volume_size: 100
         delete_on_termination: true
-    wait: true
   register: ec2
 
 - name: Add new instance to host group
@@ -230,7 +226,6 @@
       - device_name: /dev/sda
         volume_size: 5
         delete_on_termination: true
-    wait: true
   register: ec2
 
 - name: Add new instance to host group
@@ -256,7 +251,6 @@
       - device_name: /dev/sda
         volume_size: 5
         delete_on_termination: true
-    wait: true
   register: ec2
 
 - name: Add new instance to host group
