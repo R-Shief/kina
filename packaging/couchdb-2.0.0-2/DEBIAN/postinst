@@ -1,0 +1,34 @@
+#!/bin/sh -e
+
+# Copyright 2009, Noah Slater <nslater@tumbolia.org>
+
+# Copying and distribution of this file, with or without modification, are
+# permitted in any medium without royalty provided the copyright notice and this
+# notice are preserved.
+
+case $1 in
+    configure)
+        if ! getent passwd couchdb > /dev/null; then
+            adduser --system --quiet \
+                --home /opt/couchdb --no-create-home \
+                --shell /bin/bash --group --gecos "CouchDB Administrator" couchdb
+        fi
+        if test "`id -u couchdb`" -eq 0; then
+            echo "The couchdb administrative user must not be root." >&2
+            false
+        fi
+        if test "`id -g couchdb`" -eq 0; then
+            echo "The couchdb administrative group must not be root." >&2
+            false
+        fi
+        chown -R couchdb:couchdb /opt/couchdb/etc
+        chown -R couchdb:couchdb /opt/couchdb/data
+        chown -R couchdb:couchdb /opt/couchdb/var/log
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
+
+

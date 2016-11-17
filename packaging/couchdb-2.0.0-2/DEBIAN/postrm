@@ -1,0 +1,38 @@
+#!/bin/sh -e
+
+# Copyright 2009, Noah Slater <nslater@tumbolia.org>
+
+# Copying and distribution of this file, with or without modification, are
+# permitted in any medium without royalty provided the copyright notice and this
+# notice are preserved.
+
+VERSION=1.4.0
+
+case $1 in
+    purge)
+        if test -d "/opt/couchdb/etc"; then
+            rm -r -f "/opt/couchdb/etc" 
+        fi
+        if test -d "/opt/couchdb/data"; then
+            rm -r -f "/opt/couchdb/data" 
+        fi
+        if test -d "/opt/couchdb/var/log"; then
+            rm -r -f "/opt/couchdb/var/log" 
+        fi
+        if test -d "/opt/couchdb/var/run"; then
+            rm -r -f "/opt/couchdb/var/run" 
+        fi
+        if getent passwd couchdb > /dev/null && which deluser > /dev/null; then
+            deluser couchdb
+        fi
+        if getent group couchdb > /dev/null && which delgroup > /dev/null; then
+            delgroup couchdb
+        fi
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
+
+
