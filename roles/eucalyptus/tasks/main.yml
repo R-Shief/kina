@@ -218,6 +218,7 @@
     image: emi-2a255279
     instance_tags:
       worker: streaming
+      service: worker
     count_tag:
       worker: streaming
     group:
