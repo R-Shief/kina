@@ -1,0 +1,25 @@
+---
+- hosts: localhost:!all
+  connection: local
+  vars_files:
+    - vars.yml
+  tasks:
+#    - action:
+#        module: ec2_elb_facts
+#        ec2_url: http://elasticloadbalancing.cloud.aristotle.ucsb.edu:8773/
+#        region: eucalyptus
+#      register: elb_facts
+    - command: aws elb describe-load-balancers --endpoint-url http://elasticloadbalancing.cloud.aristotle.ucsb.edu:8773
+      register: elb_facts
+    - set_fact: elb_facts={{ elb_facts.stdout | from_json }}
+    - file: path=/tmp/loadbalancers state=file mode="u=rw,g=r,o=r"
+    - lineinfile: dest=/tmp/loadbalancers regexp='^{{ item.LoadBalancerName | upper }}.*$' line='{{ item.LoadBalancerName | upper }}={{ item.DNSName }}' state=present
+      with_items: '{{ elb_facts.LoadBalancerDescriptions }}'
+
+
+
+#    - lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ec2_private_ip_address }} {{hostvars[item].ec2_private_dns_name}}" state=present
+#      with_items: '{{ groups[''all''] }}'
+#      name: "Build hosts file"
+#      when: hostvars[item].ec2_private_ip_address is defined
+#      become: true

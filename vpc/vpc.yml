@@ -1,0 +1,57 @@
+---
+- hosts: localhost:!all
+  connection: local
+  vars_files:
+    - vars.yml
+  tasks:
+
+  roles:
+    - eucalyptus
+
+
+
+# DELETES ALL VPCS
+#    - command: euca-describe-vpcs
+#      register: euca_describe_vpcs
+#    - command: "euca-delete-vpc {{ item.split('\t')[1] }}"
+#      with_items: "{{ euca_describe_vpcs.stdout_lines }}"
+
+# CREATE NEW VPC
+#    - command: euca-create-vpc 10.0.0.0/16
+
+# ESTABLISH SUBNETS
+#    - command: euca-describe-vpcs
+#      register: euca_describe_vpcs
+#    - set_fact:
+#        vpc_id: "{{ euca_describe_vpcs.stdout.split('\t')[1] }}"
+#    - command: "euca-create-subnet -c {{ vpc_id }} -i 10.0.0.0/24"
+#      register: euca_create_subnet_public
+#    - set_fact:
+#        subnet_public_id: "{{ euca_create_subnet_public.stdout.split('\t')[1] }}"
+#    - command: "euca-create-subnet -c {{ vpc_id }} -i 10.0.1.0/24"
+#      register: euca_create_subnet_private
+#    - set_fact:
+#        subnet_private_id: "{{ euca_create_subnet_private.stdout.split('\t')[1] }}"
+#  gather_facts: no
+
+
+
+
+#- name: get vpc
+#  command: euca-describe-vpcs
+#  register: euca_describe_vpcs
+#- set_fact:
+#    vpc_id: "{{ euca_describe_vpcs.stdout.split('\t')[1] }}"
+
+#- name: get subnets
+#  command: euca-describe-subnets
+#  register: euca_describe_subnets
+#- with_items: "{{ euca_describe_subnets.stdout_lines }}"
+#  when: item.find('10.0.0.0/24') != -1
+#  set_fact:
+#    subnet_public_id: "{{ item.split('\t')[1] }}"
+#- with_items: "{{ euca_describe_subnets.stdout_lines }}"
+#  when: item.find('10.0.1.0/24') != -1
+#  set_fact:
+#    subnet_private_id: "{{ item.split('\t')[1] }}"
+
