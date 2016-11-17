@@ -101,8 +101,11 @@
   ec2_group:
     name: worker
     description: opens worker ports
-    rules: []
-
+    rules:
+      - proto: tcp
+        from_port: 9001
+        to_port: 9001
+        cidr_ip: 10.1.3.0/24
 
 - name: gateway
   ec2:
