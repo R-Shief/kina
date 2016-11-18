@@ -1,0 +1,32 @@
+{
+    "name": "rshief/kina",
+    "description": "ansible playbacks for building and deploying kal3a",
+    "license": "MIT",
+    "require": {
+        "vlucas/phpdotenv": "^2.4",
+        "symfony/console": "^3.1",
+        "symfony/config": "^3.1",
+        "aws/aws-sdk-php-silex": "^3.0",
+        "sorien/silex-pimple-dumper": "^2.0",
+        "league/shunt": "dev-develop"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bangpound/shunt.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "preferred-install": "source"
+    }
+}
