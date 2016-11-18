@@ -1,3 +1,5 @@
 /ucsb-eucalyptus
-*.retry
-.env
+/*.retry
+/.env
+/vars.yml
+/vendor_roles
