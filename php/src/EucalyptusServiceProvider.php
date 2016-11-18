@@ -61,40 +61,40 @@ class EucalyptusServiceProvider implements ServiceProviderInterface
             /*
              * @var LoaderInterface $loader
              */
-//            return new class($locator) extends FileLoader {
-//
-//                /**
-//                 * @param mixed $resource
-//                 * @param null  $type
-//                 *
-//                 * @return array
-//                 */
-//                public function load($resource, $type = null)
-//                {
-//                    $path = $this->locator->locate($resource);
-//
-//                    // first pass to catch parsing errors
-//                    $result = parse_ini_file($path, true);
-//                    if (false === $result || array() === $result) {
-//                        throw new InvalidArgumentException(sprintf('The "%s" file is not valid.', $resource));
-//                    }
-//                    // real raw parsing
-//                    $result = parse_ini_file($path, true, INI_SCANNER_RAW);
-//
-//                    return $result;
-//                }
-//
-//                /**
-//                 * @param mixed $resource
-//                 * @param null  $type
-//                 *
-//                 * @return bool
-//                 */
-//                public function supports($resource, $type = null)
-//                {
-//                    return is_string($resource) && 'ini' === pathinfo($resource, PATHINFO_EXTENSION);
-//                }
-//            };
+            return new class($locator) extends FileLoader {
+
+                /**
+                 * @param mixed $resource
+                 * @param null  $type
+                 *
+                 * @return array
+                 */
+                public function load($resource, $type = null)
+                {
+                    $path = $this->locator->locate($resource);
+
+                    // first pass to catch parsing errors
+                    $result = parse_ini_file($path, true);
+                    if (false === $result || array() === $result) {
+                        throw new InvalidArgumentException(sprintf('The "%s" file is not valid.', $resource));
+                    }
+                    // real raw parsing
+                    $result = parse_ini_file($path, true, INI_SCANNER_RAW);
+
+                    return $result;
+                }
+
+                /**
+                 * @param mixed $resource
+                 * @param null  $type
+                 *
+                 * @return bool
+                 */
+                public function supports($resource, $type = null)
+                {
+                    return is_string($resource) && 'ini' === pathinfo($resource, PATHINFO_EXTENSION);
+                }
+            };
         };
 
         /*

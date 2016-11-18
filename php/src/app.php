@@ -1,23 +1,23 @@
 <?php
 
-require 'vendor/autoload.php';
+use Silex\Application;
+use Silex\Provider\AssetServiceProvider;
+use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\ServiceControllerServiceProvider;
+use Silex\Provider\HttpFragmentServiceProvider;
 
-// Load environment variables.
-//(new Dotenv\Dotenv(__DIR__))->load();
-
-$app = new Silex\Application([
-  'debug' => false,
-  'pimpledump' => function () {
-      return new Sorien\Provider\PimpleDumpProvider();
-  },
-  'dotenv.loader' => function () {
-      return new Dotenv\Dotenv(dirname(__DIR__));
-  }
-]);
-$app['dotenv.loader']->load();
-$app->register($app['pimpledump']);
-$app->register(new Silex\Provider\VarDumperServiceProvider());
+$app = new Application();
 $app->register(new EucalyptusServiceProvider());
+//$app->register(new ServiceControllerServiceProvider());
+//$app->register(new AssetServiceProvider());
+//$app->register(new TwigServiceProvider());
+//$app->register(new HttpFragmentServiceProvider());
+//$app['twig'] = $app->extend('twig', function (\Twig_Environment $twig, Application $app) {
+    // add custom globals, filters, tags, ...
+//
+//    return $twig;
+//});
+
 $app['shunt'] = function (\Silex\Application $app) {
 
     $result = $app['ec2.client']->describeInstances();
@@ -75,11 +75,4 @@ $app->register(new Aws\Silex\AwsServiceProvider(), [
   },
 ]);
 
-$app->boot();
-$app['shunt']->run();
-
-
-//$app['ansible.application']->run();
-
-
-$app['pimpledump']->dump($app);
+return $app;
