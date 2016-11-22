@@ -125,6 +125,22 @@
       - device_name: /dev/sda
         volume_size: 5
         delete_on_termination: true
+    user_data: |
+      #cloud-config
+      repo_update: true
+      repo_upgrade: all
+
+      packages:
+       - git
+       - ntp
+       - curl
+       - python-apt
+       - python-pycurl
+       - sudo
+       - unzip
+       - python-dev
+       - libcairo2-dev
+       - libffi-dev
   register: ec2
 
 - add_host: groups=tag_gateway_True name={{ item.public_dns_name }}
