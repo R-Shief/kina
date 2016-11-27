@@ -64,3 +64,11 @@
     - role: debian
       dotdeb: true
     - role: worker
+
+- name: deploy web
+  hosts: tag_web_apache
+  remote_user: debian
+  roles:
+    - role: debian
+      dotdeb: true
+    - role: web
