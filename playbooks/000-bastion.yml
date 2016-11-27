@@ -1,7 +1,7 @@
 ---
-- hosts: tag_gateway_True
+- hosts: tag_bastion_True
   vars_files:
     - vars.yml
   remote_user: debian
   roles:
-    - gateway
+    - bastion

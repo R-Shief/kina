@@ -13,10 +13,10 @@
         to_port: 22
         cidr_ip: 10.1.3.0/24
 
-- name: security group gateway
+- name: security group bastion
   ec2_group:
-    name: gateway
-    description: gateway group
+    name: bastion
+    description: bastion group
     rules:
       - proto: tcp
         from_port: 22
@@ -107,19 +107,19 @@
         to_port: 9001
         cidr_ip: 10.1.3.0/24
 
-- name: gateway
+- name: bastion
   ec2:
     key_name: baba
     instance_type: m1.small
     image: emi-2a255279
     instance_tags:
-      gateway: true
-      service: gateway
+      bastion: true
+      service: bastion
     count_tag:
-      gateway: true
+      bastion: true
     exact_count: 1
     group:
-      - gateway
+      - bastion
     monitoring: true
     volumes:
       - device_name: /dev/sda
@@ -143,7 +143,7 @@
        - libffi-dev
   register: ec2
 
-- add_host: groups=tag_gateway_True name={{ item.public_dns_name }}
+- add_host: groups=tag_bastion_True name={{ item.public_dns_name }}
   with_items: '{{ ec2.instances }}'
 
 - name: couchdb servers
