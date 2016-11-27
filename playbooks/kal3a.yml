@@ -64,6 +64,8 @@
     - role: debian
       dotdeb: true
     - role: worker
+    - role: composer
+    - role: kal3a
 
 - name: deploy web
   hosts: tag_web_apache
@@ -72,3 +74,5 @@
     - role: debian
       dotdeb: true
     - role: web
+    - role: composer
+    - role: kal3a

@@ -1,0 +1,33 @@
+---
+- name: guarantee srv dir
+  file:
+    state: directory
+    path: /srv
+  become: true
+
+- name: guarantee srv dir
+  file:
+    state: directory
+    path: /srv/kal3a
+    owner: debian
+    group: debian
+  become: true
+
+- name: clone kal3a
+  git:
+    repo: https://github.com/R-Shief/kal3a.git
+    dest: /srv/kal3a
+    version: develop
+    update: no
+
+- name: set parameters.
+  template:
+    dest: /srv/kal3a/app/config/parameters.yml
+
+- name: install kal3a dependencies
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/home/debian/bin"
+    SYMFONY_ENV: prod
+  composer:
+    command: install
+    working_dir: /srv/kal3a
