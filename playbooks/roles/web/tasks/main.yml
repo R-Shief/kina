@@ -4,6 +4,20 @@
   with_items:
     - apache2
     - php7.0-fpm
+    - php7.0-cli
+    - php7.0-intl
+    - php7.0-mcrypt
+    - php7.0-curl
+    - php7.0-bcmath
+    - php7.0-mbstring
+    - php7.0-xml
+    - php7.0-mysql
+  become: true
+
+- name: Install git
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - git
   become: true
 
 - name: enable proxy module in apache
@@ -15,3 +29,7 @@
   become: true
   notify:
     - restart apache2
+
+- mount:
+    name: /
+    opts: defaults,acl
