@@ -1,0 +1,13 @@
+---
+- apt: "name={{ item }} state=installed"
+  with_items:
+    - bind9
+  become: true
+- template: src=roles/bind/templates/db.{{ item.name }}.j2 dest=/etc/bind/db.{{ item.name }}
+  with_items:
+    - name: kal3a.tld
+  become: true
+- lineinfile: dest=/etc/bind/named.conf.local line='zone "{{ item.name }}"  { type master; file "/etc/bind/db.{{ item.name }}"; };' state=present
+  with_items:
+    - name: kal3a.tld
+  become: true
