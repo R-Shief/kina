@@ -3,7 +3,7 @@
 {% block head %}
 $TTL 4h
 $ORIGIN {{ domain }}.
-@           IN  SOA     ns1.example.com.    hostmaster.example.com. (
+@           IN  SOA     ns1.kal3a.tld.    hostmaster.kal3a.tld. (
                 {{ serial }}    ; serial
                 4h      ; refresh (4 hours)
                 1h      ; retry (4 hours)
@@ -13,18 +13,14 @@ $ORIGIN {{ domain }}.
 {% endblock %}
 
 {% block ns %}
-            IN  NS      ns1.example.com.
-            IN  NS      ns2.example.com.
+            IN  NS      ns1.kal3a.tld.
 {% endblock %}
 
 {% block mx %}
 {% endblock %}
 
 {% block spf %}
-            IN  TXT     "v=spf1 a mx -all"
 {% endblock %}
 
 {% block records %}
-            IN  A       1.2.3.4
-www         IN  CNAME       @
 {% endblock %}
