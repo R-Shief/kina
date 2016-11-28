@@ -1,8 +1,26 @@
 ---
+- hosts: localhost:!all
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  roles:
+    - eucalyptus-groups
+    - bastion-eucalyptus
+
+- hosts: tag_bastion_True
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  remote_user: debian
+  tasks:
+    - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=10
+
 - hosts: tag_bastion_True
   vars_files:
     - vars.yml
   remote_user: debian
   roles:
+    - common
     - bastion
     - bind

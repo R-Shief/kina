@@ -1,0 +1,122 @@
+---
+- name: security group default
+  ec2_group:
+    name: default
+    description: default group
+    rules:
+      - proto: icmp
+        from_port: -1
+        to_port: -1
+        cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 10.1.3.0/24
+
+- name: security group bastion
+  ec2_group:
+    name: bastion
+    description: bastion group
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+
+- name: security group bind
+  ec2_group:
+    name: bind
+    description: bind group
+    rules:
+      - proto: tcp
+        from_port: 53
+        to_port: 53
+        cidr_ip: 10.1.3.0/24
+      - proto: udp
+        from_port: 53
+        to_port: 53
+        cidr_ip: 10.1.3.0/24
+
+- name: security group www
+  ec2_group:
+    name: www
+    description: opens web ports
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+
+- name: security group couchdb
+  ec2_group:
+    name: couchdb
+    description: couchdb servers
+    rules:
+      - proto: tcp
+        from_port: 5986
+        to_port: 5986
+        cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 5984
+        to_port: 5984
+        cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 4369
+        to_port: 4369
+        cidr_ip: 10.1.3.0/24
+
+- name: security group rabbitmq
+  ec2_group:
+    name: rabbitmq
+    description: services supporting runtime and admin of rabbitmq
+    rules:
+      - proto: tcp
+        from_port: 4369
+        to_port: 4369
+        cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 5672
+        to_port: 5672
+        cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 15672
+        to_port: 15672
+        cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 25672
+        to_port: 25672
+        cidr_ip: 10.1.3.0/24
+
+- name: security group elasticsearch
+  ec2_group:
+    name: elasticsearch
+    description: services supporting runtime and admin of elasticsearch
+    rules:
+      - proto: tcp
+        from_port: 9200
+        to_port: 9200
+        cidr_ip: 10.1.3.0/24
+
+- name: security group mysql
+  ec2_group:
+    name: mysql
+    description: services supporting runtime and admin of mysql
+    rules:
+      - proto: tcp
+        from_port: 3306
+        to_port: 3306
+        cidr_ip: 10.1.3.0/24
+
+- name: security group worker
+  ec2_group:
+    name: worker
+    description: opens worker ports
+    rules:
+      - proto: tcp
+        from_port: 9001
+        to_port: 9001
+        cidr_ip: 10.1.3.0/24

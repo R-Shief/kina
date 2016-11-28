@@ -1,23 +1,20 @@
 ---
-- apt: update_cache=yes
-  become: true
-
-- apt: name={{ item }}
+- apt: "name={{ item }} state=installed"
   with_items:
-    - python-pip
-    - rsync
-    - ntp
     - git
     - php5-cli
     - php5-ssh2
+    - python-dev
+    - python-pip
+    - rsync
   become: true
 
 - pip: name=ansible
   become: true
 
 - synchronize:
-    src: "{{ playbook_dir }}"
-    dest: "{{ ansible_env['HOME'] }}"
+    src: "{{ playbook_dir }}/../"
+    dest: "{{ ansible_env['HOME'] }}/cloud"
     delete: true
     rsync_opts:
       - "--exclude=vendor_roles"

@@ -1,0 +1,24 @@
+---
+- ec2:
+    key_name: baba
+    instance_type: m1.small
+    image: emi-2a255279
+    instance_tags:
+      bastion: true
+      service: bastion
+    count_tag:
+      bastion: true
+    exact_count: 1
+    group:
+      - bastion
+      - bind
+    monitoring: true
+    volumes:
+      - device_name: /dev/sda
+        volume_size: 5
+        delete_on_termination: true
+    wait: true
+  register: ec2
+
+- add_host: groups=tag_bastion_True name={{ item.public_dns_name }}
+  with_items: '{{ ec2.instances }}'
