@@ -1,15 +1,13 @@
 {% set domain = item.name %}
 ; {{ ansible_managed }}
 {% block head %}
-$TTL 4h
-$ORIGIN {{ domain }}.
-@           IN  SOA     ns1.kal3a.tld.    hostmaster.kal3a.tld. (
-                {{ serial }}    ; serial
-                4h      ; refresh (4 hours)
-                1h      ; retry (4 hours)
-                2w      ; expire (2 weeks)
-                1h      ; minimum (1 hour)
-                )
+$TTL 30
+@            IN  SOA     ns1.kal3a.tld.    hostmaster.kal3a.tld. (
+       {{ serial }}     ; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
 {% endblock %}
 
 {% block ns %}

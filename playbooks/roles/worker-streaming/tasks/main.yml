@@ -1,0 +1,6 @@
+---
+- template:
+    src: templates/nab3a-pipe.conf
+    dest: /etc/supervisor/conf.d
+  become: true
+  notify: restart supervisor

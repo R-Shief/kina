@@ -1,0 +1,8 @@
+---
+- name: restart supervisor
+  service: name=supervisor state=restarted
+  become: true
+
+- name: reload supervisor
+  service: name=supervisor state=reloaded
+  become: true

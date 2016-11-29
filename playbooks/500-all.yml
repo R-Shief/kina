@@ -1,6 +1,9 @@
 ---
 # This playbook deploys the whole application stack in this site.
 
+#- environment:
+#    PATH: "{{ ansible_env.PATH | default }}:/home/debian/bin"
+
 - name: apply common configuration to all nodes
   hosts: all
   gather_facts: no
@@ -43,7 +46,6 @@
   hosts: tag_db_couchdb
   gather_facts: no
   remote_user: debian
-
   roles:
     - couchdb
 
@@ -64,15 +66,5 @@
     - role: debian
       dotdeb: true
     - role: worker
-    - role: composer
-    - role: kal3a
-
-- name: deploy web
-  hosts: tag_web_apache
-  remote_user: debian
-  roles:
-    - role: debian
-      dotdeb: true
-    - role: web
     - role: composer
     - role: kal3a

@@ -1,0 +1,50 @@
+---
+- ec2:
+    key_name: baba
+    instance_type: m1.small
+    image: emi-2a255279
+    instance_tags:
+      worker: streaming
+    count_tag:
+      worker: streaming
+    group:
+      - default
+      - supervisor
+    exact_count: 1
+    monitoring: true
+    volumes:
+      - device_name: /dev/sda
+        volume_size: 5
+        delete_on_termination: true
+    assign_public_ip: no
+    wait: true
+  register: ec2
+
+- name: Add new instance to host group
+  add_host: groups=tag_worker_streaming name={{ item.public_dns_name }}
+  with_items: '{{ ec2.instances }}'
+
+- ec2:
+    key_name: baba
+    instance_type: m1.small
+    image: emi-2a255279
+    instance_tags:
+      worker: consumer
+    count_tag:
+      worker: consumer
+    group:
+      - default
+      - supervisor
+    exact_count: 1
+    monitoring: true
+    volumes:
+      - device_name: /dev/sda
+        volume_size: 5
+        delete_on_termination: true
+    assign_public_ip: no
+    wait: true
+  register: ec2
+
+- name: Add new instance to host group
+  add_host: groups=tag_worker_consumer name={{ item.public_dns_name }}
+  with_items: '{{ ec2.instances }}'

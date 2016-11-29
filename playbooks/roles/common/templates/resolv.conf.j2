@@ -1,0 +1,5 @@
+domain kal3a.tld
+search kal3a.tld
+{% for host in groups['tag_bastion_True'] %}
+nameserver {{ hostvars[host].ec2_private_ip_address }}
+{% endfor %}

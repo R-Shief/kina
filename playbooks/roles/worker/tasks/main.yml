@@ -11,15 +11,3 @@
     - php7.0-xml
     - php7.0-mysql
   become: true
-
-- name: Install git
-  apt: "name={{ item }} state=installed"
-  with_items:
-    - git
-  become: true
-
-- name: Install supervisor
-  apt: "name={{ item }} state=installed"
-  with_items:
-    - supervisor
-  become: true

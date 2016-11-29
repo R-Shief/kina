@@ -111,10 +111,10 @@
         to_port: 3306
         cidr_ip: 10.1.3.0/24
 
-- name: security group worker
+- name: security group supervisor
   ec2_group:
-    name: worker
-    description: opens worker ports
+    name: supervisor
+    description: opens supervisor ports
     rules:
       - proto: tcp
         from_port: 9001

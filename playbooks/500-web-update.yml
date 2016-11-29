@@ -1,0 +1,13 @@
+---
+- name: deploy web
+  hosts: tag_web_apache
+  vars_files:
+    - vars.yml
+  remote_user: debian
+  roles:
+    - role: common
+    - role: debian
+      dotdeb: true
+    - role: web
+    - role: composer
+    - role: kal3a

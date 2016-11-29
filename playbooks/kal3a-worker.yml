@@ -1,8 +1,0 @@
----
-- name: deploy worker
-  hosts: tag_worker_streaming
-  remote_user: debian
-  roles:
-    - role: debian
-      dotdeb: true
-    - role: worker

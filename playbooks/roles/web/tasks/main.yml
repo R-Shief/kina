@@ -14,12 +14,6 @@
     - php7.0-mysql
   become: true
 
-- name: Install git
-  apt: "name={{ item }} state=installed"
-  with_items:
-    - git
-  become: true
-
 - name: enable proxy module in apache
   apache2_module: 'state=present name={{ item }}'
   with_items:
@@ -30,6 +24,3 @@
   notify:
     - restart apache2
 
-- mount:
-    name: /
-    opts: defaults,acl

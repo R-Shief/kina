@@ -1,0 +1,9 @@
+---
+- hosts: tag_bastion_True
+  vars_files:
+    - vars.yml
+  remote_user: debian
+  roles:
+    - common
+    - bastion
+    - bind

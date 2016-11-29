@@ -9,6 +9,7 @@
     - bastion-eucalyptus
 
 - hosts: tag_bastion_True
+  connection: local
   gather_facts: no
   vars_files:
     - vars.yml

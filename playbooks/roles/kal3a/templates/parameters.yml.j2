@@ -1,58 +1,67 @@
 # This file is auto-generated during the composer install
 parameters:
-  database_host: mysql
-  database_port: null
-  database_name: kal3a
-  database_user: kal3a
-  database_password: kal3a
-  mailer_transport: smtp
-  mailer_host: 127.0.0.1
-  mailer_user: null
-  mailer_password: null
-  secret: ''
-  rabbitmq_host: _rabbitmq._tcp.kal3a.tld
-  rabbitmq_user: user1
-  rabbitmq_pass: changeme
-  rabbitmq_port: 5672
-  rabbitmq_vhost: /
-  couchdb_host: _couchdb._tcp.kal3a.tld
-  couchdb_port: 5984
-  couchdb_name: kal3a
-  couchdb_user: ~
-  couchdb_password: ~
-  elasticsearch_host: _elasticsearch._tcp.kal3a.tld
-  elasticsearch_port: 9200
-  elasticsearch_index_name: kal3a
-  twitter_consumer_key: {{ twitter_consumer_key }}
-  twitter_consumer_secret: {{ twitter_consumer_secret }}
-  twitter_access_token: {{ twitter_access_token }}
-  twitter_access_token_secret: {{ twitter_access_token_secret }}
-  aws_access_key_id: {{ aws_access_key}}
-  aws_secret_access_key: {{ aws_secret_key }}
-  aws_region: cloud.aristotle.ucsb.edu
-  aws_endpoint_map:
-      cloud.aristotle.ucsb.edu/autoscaling:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-      cloud.aristotle.ucsb.edu/cloudformation:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-      cloud.aristotle.ucsb.edu/ec2:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-      cloud.aristotle.ucsb.edu/elasticloadbalancing:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-      cloud.aristotle.ucsb.edu/iam:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-      cloud.aristotle.ucsb.edu/monitoring:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-      cloud.aristotle.ucsb.edu/s3:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-      cloud.aristotle.ucsb.edu/sts:
-          endpoint: '{service}.{region}:8773'
-          port: 8773
-  kal3a_web_url: 'http://localhost:8000/api/'
+    database_host: _mysql._tcp.kal3a.tld
+    database_port: null
+    database_name: kal3a
+    database_user: kal3a
+    database_password: kal3a
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: ''
+    rabbitmq_host: _rabbitmq._tcp.kal3a.tld
+    rabbitmq_user: user1
+    rabbitmq_pass: changeme
+    rabbitmq_port: 5672
+    rabbitmq_vhost: /
+    couchdb_host: _couchdb._tcp.kal3a.tld
+    couchdb_port: 5984
+    couchdb_name: kal3a
+    couchdb_user: ~
+    couchdb_password: ~
+    elasticsearch_host: _elasticsearch._tcp.kal3a.tld
+    elasticsearch_port: 9200
+    elasticsearch_index_name: kal3a
+    twitter_consumer_key: {{ twitter_consumer_key }}
+    twitter_consumer_secret: {{ twitter_consumer_secret }}
+    twitter_access_token: {{ twitter_access_token }}
+    twitter_access_token_secret: {{ twitter_access_token_secret }}
+    aws_access_key_id: {{ aws_access_key}}
+    aws_secret_access_key: {{ aws_secret_key }}
+    aws_region: cloud.aristotle.ucsb.edu
+    aws_endpoint_map:
+        cloud.aristotle.ucsb.edu/autoscaling:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+        cloud.aristotle.ucsb.edu/cloudformation:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+        cloud.aristotle.ucsb.edu/ec2:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+        cloud.aristotle.ucsb.edu/elasticloadbalancing:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+        cloud.aristotle.ucsb.edu/iam:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+        cloud.aristotle.ucsb.edu/monitoring:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+        cloud.aristotle.ucsb.edu/s3:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+        cloud.aristotle.ucsb.edu/sts:
+            endpoint: '{service}.{region}:8773'
+            port: 8773
+    kal3a_web_url: 'http://euca-169-231-235-80.eucalyptus.cloud.aristotle.ucsb.edu/api/'
+    supervisor_servers:
+        dev:
+{% for host in groups['tag_worker'] %}
+            {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}:
+                host: {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", ".kal3a.tld") }}
+                username: user
+                password: 123
+                port: 9001
+{% endfor %}

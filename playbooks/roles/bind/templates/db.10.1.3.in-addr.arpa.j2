@@ -1,0 +1,10 @@
+{% extends "base.j2" %}
+
+{% set serial = '2014030301' %}
+
+{% block records %}
+{{ super() }}
+{% for host in groups['all'] %}
+{{ hostvars[host].ec2_private_ip_address | replace("10.1.3.", "") }}       IN  PTR      {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}.kal3a.tld.
+{% endfor %}
+{% endblock %}

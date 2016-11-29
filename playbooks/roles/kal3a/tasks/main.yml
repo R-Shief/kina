@@ -1,4 +1,10 @@
 ---
+- name: Install git
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - git
+  become: true
+
 - name: guarantee srv dir
   file:
     state: directory
@@ -18,10 +24,11 @@
     repo: https://github.com/R-Shief/kal3a.git
     dest: /srv/kal3a
     version: develop
-    update: no
+    update: yes
 
 - name: set parameters.
   template:
+    src: templates/parameters.yml.j2
     dest: /srv/kal3a/app/config/parameters.yml
 
 - name: install kal3a dependencies

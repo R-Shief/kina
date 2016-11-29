@@ -1,0 +1,7 @@
+---
+- template:
+    src: templates/nab3a-consumer.conf
+    dest: /etc/supervisor/conf.d
+  become: true
+  notify: restart supervisor
+
