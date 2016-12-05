@@ -1,0 +1,10 @@
+---
+- name: apply common configuration to all nodes
+  hosts: all
+  gather_facts: no
+  remote_user: debian
+
+  tasks:
+    - name: restart networking
+      service: name=networking state=restarted
+      become: true

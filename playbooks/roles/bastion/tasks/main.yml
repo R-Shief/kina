@@ -28,3 +28,4 @@
     delete: true
     rsync_opts:
       - "--exclude=vendor_roles"
+      - "--exclude=.vagrant"

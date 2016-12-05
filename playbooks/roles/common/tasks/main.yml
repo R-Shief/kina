@@ -16,7 +16,11 @@
 - apt: upgrade=yes
   become: true
 
-- template:
-    src: templates/resolv.conf.j2
-    dest: /etc/resolv.conf
+- lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-name-servers {{ hostvars[item].ec2_private_ip_address }};' state=present
+  with_items: '{{ groups[''tag_bastion_True''] }}'
+  when: hostvars[item].ec2_private_ip_address is defined
   become: true
+
+- lineinfile: dest=/etc/dhcp/dhclient.conf line='supersede domain-name "kal3a.tld";' state=present
+  become: true
+  notify: restart networking
