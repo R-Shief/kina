@@ -43,11 +43,17 @@ $app['shunt'] = function (\Silex\Application $app) {
       ),
 
       'tasks' => array(
+          'ansible-galaxy' => function (\League\Shunt\Shunt $s) {
+              $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-galaxy install -r requirements.yml');
+          },
         'worker-streaming' => function (\League\Shunt\Shunt $s) {
             $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 500-worker-streaming.yml');
         },
           'web-update' => function (\League\Shunt\Shunt $s) {
               $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 500-web-update.yml');
+          },
+          'all-update' => function (\League\Shunt\Shunt $s) {
+              $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 500-all.yml');
           },
         'vmstat' => function (\League\Shunt\Shunt $s) {
             $s->run('vmstat -w');
