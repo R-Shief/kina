@@ -73,6 +73,39 @@
   notify: restart couchdb
   become: true
 
+- ini_file: dest=/opt/couchdb/etc/local.ini
+            section=admins
+            option='{{ couchdb_user }}'
+            value='{{ couchdb_password }}'
+            backup=yes
+  notify: restart couchdb
+  become: true
+
+- uri:
+    uri: http://localhost:5984/_config/admins/{{ couchdb_user }}
+    method: PUT
+    body_format: json
+    body: '{{ couchdb_password }}'
+  ignore_errors: True
+
+- ini_file: dest=/opt/couchdb/etc/local.ini
+            section=couch_httpd_auth
+            option=require_valid_user
+            value=true
+            backup=yes
+  notify: restart couchdb
+  become: true
+
+- uri:
+    uri: http://localhost:5984/_cluster_setup
+    method: POST
+    body_format: json
+    body:
+      action: finish_cluster
+    status_code: 201
+  ignore_errors: True
+
+
 #- name: Get software for Erlang build of CouchDB 2.0.
 #  apt: "name={{ item }} state=installed"
 #  with_items:

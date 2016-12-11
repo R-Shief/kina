@@ -1,4 +1,4 @@
 ---
 - name: restart couchdb
-  service: name=couchdb state=restarted
+  command: sv restart couchdb
   become: true

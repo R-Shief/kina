@@ -18,8 +18,8 @@ parameters:
     couchdb_host: _couchdb._tcp.kal3a.tld
     couchdb_port: 5984
     couchdb_name: kal3a
-    couchdb_user: ~
-    couchdb_password: ~
+    couchdb_user: {{ couchdb_user }}
+    couchdb_password: {{ couchdb_password }}
     elasticsearch_host: _elasticsearch._tcp.kal3a.tld
     elasticsearch_port: 9200
     elasticsearch_index_name: kal3a

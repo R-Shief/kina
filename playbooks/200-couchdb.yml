@@ -29,5 +29,7 @@
   hosts: tag_db_couchdb
   gather_facts: no
   remote_user: debian
+  vars_files:
+    - vars.yml
   roles:
     - couchdb
