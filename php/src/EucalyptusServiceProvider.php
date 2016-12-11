@@ -61,11 +61,12 @@ class EucalyptusServiceProvider implements ServiceProviderInterface
             /*
              * @var LoaderInterface $loader
              */
-            return new class($locator) extends FileLoader {
+            return new class($locator) extends FileLoader
+            {
 
                 /**
                  * @param mixed $resource
-                 * @param null  $type
+                 * @param null $type
                  *
                  * @return array
                  */
@@ -86,7 +87,7 @@ class EucalyptusServiceProvider implements ServiceProviderInterface
 
                 /**
                  * @param mixed $resource
-                 * @param null  $type
+                 * @param null $type
                  *
                  * @return bool
                  */
@@ -102,19 +103,19 @@ class EucalyptusServiceProvider implements ServiceProviderInterface
          */
         $pimple['eucalyptus.provider.pattern_endpoint'] = function () {
             $pattern = [
-              'endpoint' => '{service}.{region}:8773',
-              'port' => 8773,
+                'endpoint' => '{service}.{region}:8773',
+                'port' => 8773,
             ];
 
             return new \Aws\Endpoint\PatternEndpointProvider([
-              'cloud.aristotle.ucsb.edu/autoscaling' => $pattern,
-              'cloud.aristotle.ucsb.edu/cloudformation' => $pattern,
-              'cloud.aristotle.ucsb.edu/ec2' => $pattern,
-              'cloud.aristotle.ucsb.edu/elasticloadbalancing' => $pattern,
-              'cloud.aristotle.ucsb.edu/iam' => $pattern,
-              'cloud.aristotle.ucsb.edu/monitoring' => $pattern,
-              'cloud.aristotle.ucsb.edu/s3' => $pattern,
-              'cloud.aristotle.ucsb.edu/sts' => $pattern,
+                'cloud.aristotle.ucsb.edu/autoscaling' => $pattern,
+                'cloud.aristotle.ucsb.edu/cloudformation' => $pattern,
+                'cloud.aristotle.ucsb.edu/ec2' => $pattern,
+                'cloud.aristotle.ucsb.edu/elasticloadbalancing' => $pattern,
+                'cloud.aristotle.ucsb.edu/iam' => $pattern,
+                'cloud.aristotle.ucsb.edu/monitoring' => $pattern,
+                'cloud.aristotle.ucsb.edu/s3' => $pattern,
+                'cloud.aristotle.ucsb.edu/sts' => $pattern,
             ]);
         };
 
