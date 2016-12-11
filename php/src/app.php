@@ -37,6 +37,12 @@ $app['shunt'] = function (\Silex\Application $app) {
             'ansible-galaxy' => function (\League\Shunt\Shunt $s) {
                 $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-galaxy install -r requirements.yml');
             },
+            'couchdb' => function (\League\Shunt\Shunt $s) {
+                $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 200-couchdb.yml');
+            },
+            'elasticsearch' => function (\League\Shunt\Shunt $s) {
+                $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 200-elasticsearch.yml');
+            },
             'worker-streaming' => function (\League\Shunt\Shunt $s) {
                 $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 500-worker-streaming.yml');
             },
