@@ -1,0 +1,36 @@
+---
+- hosts: localhost:!all
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  roles:
+    - eucalyptus-groups
+    - elasticsearch-eucalyptus
+
+- hosts: tag_index_elasticsearch
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  remote_user: debian
+  tasks:
+    - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=10
+
+- name: apply common configuration to all nodes
+  hosts: tag_index_elasticsearch
+  gather_facts: no
+  remote_user: debian
+
+  roles:
+    - common
+
+- name: deploy Elasticsearch
+  hosts: tag_index_elasticsearch
+  remote_user: debian
+  roles:
+    - role: debian
+      elastic: true
+    - role: ansiblebit.oracle-java
+      oracle_java_set_as_default: yes
+    - role: elasticsearch

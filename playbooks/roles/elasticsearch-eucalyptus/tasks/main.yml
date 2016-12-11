@@ -1,18 +1,18 @@
 ---
-- name: couchdb servers
+- name: elasticsearch servers
   ec2:
     key_name: baba
     instance_type: m3.xlarge
     image: emi-2a255279
     instance_tags:
-      db: couchdb
-      service: couchdb
+      index: elasticsearch
+      service: elasticsearch
     count_tag:
-      db: couchdb
+      index: elasticsearch
     exact_count: 1
     group:
       - default
-      - couchdb
+      - elasticsearch
     monitoring: true
     volumes:
       - device_name: /dev/sda
@@ -26,5 +26,5 @@
   register: ec2
 
 - name: Add new instance to host group
-  add_host: groups=tag_db_couchdb name={{ item.public_dns_name }}
+  add_host: groups=tag_index_elasticsearch name={{ item.public_dns_name }}
   with_items: '{{ ec2.instances }}'
