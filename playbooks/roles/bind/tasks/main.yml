@@ -1,4 +1,10 @@
 ---
+- lineinfile: dest=/etc/hosts line='{{ hostvars[item].ec2_private_ip_address }} {{hostvars[item].ec2_private_dns_name}}' state=present
+  with_items: '{{ groups[''all''] }}'
+  name: "Build hosts file"
+  when: hostvars[item].ec2_private_ip_address is defined
+  become: true
+
 - apt: "name={{ item }} state=installed"
   with_items:
     - bind9
