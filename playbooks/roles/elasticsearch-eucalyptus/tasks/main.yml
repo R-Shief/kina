@@ -2,7 +2,7 @@
 - name: elasticsearch servers
   ec2:
     key_name: baba
-    instance_type: m3.xlarge
+    instance_type: m3.2xlarge
     image: emi-2a255279
     instance_tags:
       index: elasticsearch
