@@ -22,3 +22,4 @@
     regexp: 'network.host'
     line: "network.host: {{ hostvars[ansible_ssh_host]['ec2_private_ip_address'] }}"
   become: true
+  notify: restart elasticsearch
