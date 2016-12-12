@@ -37,6 +37,9 @@ $app['shunt'] = function (\Silex\Application $app) {
             'ansible-galaxy' => function (\League\Shunt\Shunt $s) {
                 $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-galaxy install -r requirements.yml');
             },
+            'bind' => function (\League\Shunt\Shunt $s) {
+                $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 100-bastion-bind.yml');
+            },
             'couchdb' => function (\League\Shunt\Shunt $s) {
                 $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 200-couchdb.yml');
             },
@@ -51,6 +54,9 @@ $app['shunt'] = function (\Silex\Application $app) {
             },
             'all-update' => function (\League\Shunt\Shunt $s) {
                 $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 500-all.yml');
+            },
+            'symfony' => function (\League\Shunt\Shunt $s) {
+                $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 900-reset-symfony.yml');
             },
             'vmstat' => function (\League\Shunt\Shunt $s) {
                 $s->run('vmstat -w');

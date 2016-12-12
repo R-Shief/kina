@@ -1,0 +1,11 @@
+---
+- hosts:
+    - tag_web_apache
+    - tag_worker_*
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - command: bin/console cache:clear --env=prod
+      args:
+        chdir: /srv/kal3a
