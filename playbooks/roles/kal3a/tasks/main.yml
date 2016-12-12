@@ -30,6 +30,7 @@
   template:
     src: templates/parameters.yml.j2
     dest: /srv/kal3a/app/config/parameters.yml
+  notify: clear kal3a cache
 
 - name: install kal3a dependencies
   environment:
@@ -38,3 +39,4 @@
   composer:
     command: install
     working_dir: /srv/kal3a
+  notify: clear kal3a cache

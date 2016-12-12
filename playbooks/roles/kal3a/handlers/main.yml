@@ -1,0 +1,8 @@
+---
+- name: clear kal3a cache
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/home/debian/bin"
+    SYMFONY_ENV: prod
+  command: bin/console cache:clear
+  args:
+    chdir: /srv/kal3a
