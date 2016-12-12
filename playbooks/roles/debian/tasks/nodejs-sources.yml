@@ -6,6 +6,6 @@
 - name: Add nodesource sources to apt.
   apt_repository: repo='{{ item }}' state=present filename='nodesource'
   with_items:
-    - deb https://deb.nodesource.com/node_4.x jessie main
-    - deb-src https://deb.nodesource.com/node_4.x jessie main
+    - deb https://deb.nodesource.com/node_7.x  jessie main
+    - deb-src https://deb.nodesource.com/node_7.x jessie main
   become: true
