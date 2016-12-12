@@ -1,0 +1,55 @@
+---
+- apt: "name={{ item }} state=present"
+  with_items:
+    - lsb-release
+    - curl
+    - nodejs
+    - git
+  become: yes
+
+- name: guarantee srv dir
+  file:
+    state: directory
+    path: /srv
+  become: true
+
+- git:
+    repo: https://github.com/r-shief/kal3a-tags.git
+    dest: ~/kal3a-tags
+    version: master
+
+- command: npm install
+  args:
+    chdir: ~/kal3a-tags
+
+- command: bower install
+  args:
+    chdir: ~/kal3a-tags
+
+- command: grunt build
+  args:
+    chdir: ~/kal3a-tags
+  environment:
+    KAL3A_TARGET: '{{ kal3a_target }}'
+
+# @todo temporary until we have better vhost
+- command: rm -fr /srv/kal3a/web/tags
+- command: cp -r ~/kal3a-tags/dist /srv/kal3a/web/tags
+
+- name: delete deployment dir
+  file:
+    state: absent
+    path: /srv/kal3a-tags
+  become: true
+
+- command: cp -r /home/debian/kal3a-tags/dist /srv/kal3a-tags
+  become: true
+
+- name: guarantee srv dir
+  file:
+    state: directory
+    path: /srv/kal3a-tags
+    owner: '{{ ansible_user }}'
+    group: debian
+    recurse: true
+  become: true

@@ -52,6 +52,12 @@ $app['shunt'] = function (\Silex\Application $app) {
             'web-update' => function (\League\Shunt\Shunt $s) {
                 $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 500-web-update.yml');
             },
+            'kal3a-search' => function (\League\Shunt\Shunt $s) {
+                $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 600-kal3a-search.yml');
+            },
+            'kal3a-tags' => function (\League\Shunt\Shunt $s) {
+                $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 600-kal3a-tags.yml');
+            },
             'all-update' => function (\League\Shunt\Shunt $s) {
                 $s->run('cd cloud; source .env; source .env2; cd playbooks; ansible-playbook 500-all.yml');
             },

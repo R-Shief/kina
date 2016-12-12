@@ -1,0 +1,16 @@
+---
+- apt: "name={{ item }} state=present"
+  with_items:
+    - lsb-release
+    - curl
+    - nodejs
+    - git
+  become: yes
+
+- npm:
+    name: '{{ item }}'
+    global: yes
+  with_items:
+    - bower
+    - grunt-cli
+  become: true

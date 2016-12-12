@@ -1,0 +1,55 @@
+---
+- apt: "name={{ item }} state=present"
+  with_items:
+    - lsb-release
+    - curl
+    - nodejs
+    - git
+  become: yes
+
+- name: guarantee srv dir
+  file:
+    state: directory
+    path: /srv
+  become: true
+
+- git:
+    repo: https://github.com/r-shief/kal3a-search.git
+    dest: ~/kal3a-search
+    version: master
+
+- command: npm install
+  args:
+    chdir: ~/kal3a-search
+
+- command: bower install
+  args:
+    chdir: ~/kal3a-search
+
+- command: grunt build
+  args:
+    chdir: ~/kal3a-search
+  environment:
+    KAL3A_TARGET: '{{ kal3a_target }}'
+
+# @todo temporary until we have better vhost
+- command: rm -fr /srv/kal3a/web/search
+- command: cp -r ~/kal3a-search/dist /srv/kal3a/web/search
+
+- name: delete deployment dir
+  file:
+    state: absent
+    path: /srv/kal3a-search
+  become: true
+
+- command: cp -r /home/debian/kal3a-search/dist /srv/kal3a-search
+  become: true
+
+- name: guarantee srv dir
+  file:
+    state: directory
+    path: /srv/kal3a-search
+    owner: '{{ ansible_user }}'
+    group: debian
+    recurse: true
+  become: true
