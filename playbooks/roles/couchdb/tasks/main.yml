@@ -10,6 +10,7 @@
   apt: "name={{ item }} state=installed"
   with_items:
     - runit
+    - libmozjs185-dev
   become: true
 
 - name: Update apt cache if needed.
@@ -51,9 +52,19 @@
   copy:
     content: |
       #!/bin/sh
-      cd /opt/couchdb
-      exec chpst -u couchdb:couchdb env HOME=/opt/couchdb bin/couchdb
+      exec 2>&1
+      exec chpst -u couchdb:couchdb env HOME=/opt/couchdb /opt/couchdb/bin/couchdb
     dest: /opt/couchdb/etc/sv/run
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+
+- copy:
+    content: |
+      #!/bin/sh
+      exec chpst -u couchdb:couchdb svlogd -tt /opt/couchdb/var/log
+    dest: /opt/couchdb/etc/sv/log/run
     owner: root
     group: root
     mode: 0755
