@@ -13,8 +13,5 @@ $output = new ConsoleOutput();
 $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
 
 $app = require __DIR__.'/../src/app.php';
-require __DIR__.'/../config/'.$env.'.php';
-$console = require __DIR__.'/../src/console.php';
+$console = $app['ansible.application'];
 $console->run($input, $output);
-
-$app['pimpledump']->dump($app);
