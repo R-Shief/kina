@@ -79,7 +79,7 @@
 - ini_file: dest=/opt/couchdb/etc/local.ini
             section=chttpd
             option=bind_address
-            value='{{ hostvars[ansible_ssh_host]['ec2_private_ip_address'] }}'
+            value='{{ hostvars[ansible_ssh_host]['PrivateIpAddress'] }}'
             backup=yes
   notify: restart couchdb
   become: true

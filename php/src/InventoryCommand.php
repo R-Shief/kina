@@ -68,9 +68,11 @@ class InventoryCommand extends Command
                 $combinedKey = $tag['Key'] .'_'. $tag['Value'];
                 $inventory[$tag['Key']]['children'][] = $combinedKey;
                 $inventory[$combinedKey][] = $hostname;
+                if ($tag['Key'] === 'service') {
+                    $inventory['_meta']['hostvars'][$hostname]['CustomHostname'] = $tag['Value'];
+                }
             }
         }
-
 
         $output->writeln(json_encode($inventory));
     }

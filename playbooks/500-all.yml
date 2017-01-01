@@ -23,7 +23,7 @@
     - role: web
 
 - name: deploy MySQL and configure the databases
-  hosts: tag_db_mysql
+  hosts: db_mysql
   gather_facts: no
   remote_user: debian
 
@@ -31,7 +31,7 @@
     - role: db
 
 - name: deploy RabbitMQ
-  hosts: tag_queue_rabbitmq
+  hosts: queue_rabbitmq
   gather_facts: no
   remote_user: debian
 
@@ -43,14 +43,14 @@
       become: true
 
 - name: deploy CouchDB
-  hosts: tag_db_couchdb
+  hosts: db_couchdb
   gather_facts: no
   remote_user: debian
   roles:
     - couchdb
 
 - name: deploy Elasticsearch
-  hosts: tag_index_elasticsearch
+  hosts: index_elasticsearch
   remote_user: debian
   roles:
     - role: debian
@@ -60,7 +60,7 @@
     - role: elasticsearch
 
 - name: deploy worker
-  hosts: tag_worker_streaming
+  hosts: worker_streaming
   remote_user: debian
   vars_files:
     - vars.yml

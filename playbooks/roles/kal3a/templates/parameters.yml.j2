@@ -1,6 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
-    database_host: _mysql._tcp.kal3a.tld
+    database_host: mysql
     database_port: null
     database_name: kal3a
     database_user: kal3a
@@ -10,17 +10,17 @@ parameters:
     mailer_user: null
     mailer_password: null
     secret: ''
-    rabbitmq_host: _rabbitmq._tcp.kal3a.tld
+    rabbitmq_host: rabbitmq
     rabbitmq_user: user1
     rabbitmq_pass: changeme
     rabbitmq_port: 5672
     rabbitmq_vhost: /
-    couchdb_host: _couchdb._tcp.kal3a.tld
+    couchdb_host: couchdb
     couchdb_port: 5984
     couchdb_name: kal3a
     couchdb_user: {{ couchdb_user }}
     couchdb_password: {{ couchdb_password }}
-    elasticsearch_host: _elasticsearch._tcp.kal3a.tld
+    elasticsearch_host: elasticsearch
     elasticsearch_port: 9200
     elasticsearch_index_name: kal3a
     twitter_consumer_key: {{ twitter_consumer_key }}
@@ -58,9 +58,9 @@ parameters:
     kal3a_web_url: 'http://euca-169-231-235-80.eucalyptus.cloud.aristotle.ucsb.edu/api/'
     supervisor_servers:
         dev:
-{% for host in groups['tag_worker'] %}
-            {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}:
-                host: {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", ".kal3a.tld") }}
+{% for host in groups['worker'] %}
+            {{ hostvars[host].PrivateDnsName | replace(".eucalyptus.internal", "") }}:
+                host: {{ hostvars[host].PrivateDnsName }}
                 username: user
                 password: 123
                 port: 9001

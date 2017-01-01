@@ -8,7 +8,7 @@
     - eucalyptus-groups
     - bastion-eucalyptus
 
-- hosts: tag_bastion_True
+- hosts: bastion_True
   connection: local
   gather_facts: no
   vars_files:
@@ -17,7 +17,7 @@
   tasks:
     - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=10
 
-- hosts: tag_bastion_True
+- hosts: bastion_True
   vars_files:
     - vars.yml
   remote_user: debian

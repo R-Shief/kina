@@ -21,7 +21,7 @@
   register: ec2
 
 - name: Add new instance to host group
-  add_host: groups=tag_worker_streaming name={{ item.public_dns_name }}
+  add_host: groups=worker_streaming name={{ item.PublicDnsName }}
   with_items: '{{ ec2.instances }}'
 
 - ec2:
@@ -46,5 +46,5 @@
   register: ec2
 
 - name: Add new instance to host group
-  add_host: groups=tag_worker_consumer name={{ item.public_dns_name }}
+  add_host: groups=worker_consumer name={{ item.PublicDnsName }}
   with_items: '{{ ec2.instances }}'

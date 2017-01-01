@@ -1,6 +1,6 @@
 ---
 - name: deploy web
-  hosts: tag_web_apache
+  hosts: web_apache
   vars_files:
     - vars.yml
   remote_user: debian

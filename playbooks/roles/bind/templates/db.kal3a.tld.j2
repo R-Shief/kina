@@ -4,34 +4,34 @@
 
 {% block records %}
 {{ super() }}
-{% for host in groups['tag_bastion_True'] %}
-ns1.kal3a.tld.          IN      A       {{ hostvars[host].ec2_private_ip_address }}
+{% for host in groups['bastion_True'] %}
+ns1.kal3a.tld.          IN      A       {{ hostvars[host].PrivateIpAddress }}
 {% endfor %}
 {% for host in groups['all'] %}
-{{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}.kal3a.tld.        IN  A       {{ hostvars[host].ec2_private_ip_address }}
+{{ hostvars[host].PrivateDnsName | replace(".eucalyptus.internal", "") }}.kal3a.tld.        IN  A       {{ hostvars[host].PrivateIpAddress }}
 {% endfor %}
 
 {% if groups['tag_service_mysql'] is defined %}
 {% for host in groups['tag_service_mysql'] %}
-_mysql._tcp 86400 IN SRV 0 0 3306 {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}
+_mysql._tcp 86400 IN SRV 0 0 3306 {{ hostvars[host].PrivateDnsName | replace(".eucalyptus.internal", "") }}
 {% endfor %}
 {% endif %}
 
 {% if groups['tag_service_couchdb'] is defined %}
 {% for host in groups['tag_service_couchdb'] %}
-_couchdb._tcp 86400 IN SRV 0 0 5984 {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}
+_couchdb._tcp 86400 IN SRV 0 0 5984 {{ hostvars[host].PrivateDnsName | replace(".eucalyptus.internal", "") }}
 {% endfor %}
 {% endif %}
 
 {% if groups['tag_service_elasticsearch'] is defined %}
 {% for host in groups['tag_service_elasticsearch'] %}
-_elasticsearch._tcp 86400 IN SRV 0 0 9200 {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}
+_elasticsearch._tcp 86400 IN SRV 0 0 9200 {{ hostvars[host].PrivateDnsName | replace(".eucalyptus.internal", "") }}
 {% endfor %}
 {% endif %}
 
 {% if groups['tag_queue_rabbitmq'] is defined %}
 {% for host in groups['tag_queue_rabbitmq'] %}
-_rabbitmq._tcp 86400 IN SRV 0 0 5672 {{ hostvars[host].ec2_private_dns_name | replace(".eucalyptus.internal", "") }}
+_rabbitmq._tcp 86400 IN SRV 0 0 5672 {{ hostvars[host].PrivateDnsName | replace(".eucalyptus.internal", "") }}
 {% endfor %}
 {% endif %}
 {% endblock %}

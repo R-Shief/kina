@@ -26,5 +26,5 @@
   register: ec2
 
 - name: Add new instance to host group
-  add_host: groups=tag_index_elasticsearch name={{ item.public_dns_name }}
+  add_host: groups=tag_index_elasticsearch name={{ item.PublicDnsName }}
   with_items: '{{ ec2.instances }}'

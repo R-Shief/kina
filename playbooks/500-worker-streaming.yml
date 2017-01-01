@@ -8,7 +8,7 @@
     - eucalyptus-groups
     - worker-eucalyptus
 
-- hosts: tag_worker_*
+- hosts: worker_*
   connection: local
   gather_facts: no
   vars_files:
@@ -17,7 +17,7 @@
   tasks:
     - local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH delay=10
 
-- hosts: tag_worker_*
+- hosts: worker_*
   vars_files:
     - vars.yml
   remote_user: debian
@@ -30,14 +30,14 @@
     - role: composer
     - role: kal3a
 
-- hosts: tag_worker_consumer
+- hosts: worker_consumer
   vars_files:
     - vars.yml
   remote_user: debian
   roles:
     - role: worker-consumer
 
-- hosts: tag_worker_streaming
+- hosts: worker_streaming
   vars_files:
     - vars.yml
   remote_user: debian
