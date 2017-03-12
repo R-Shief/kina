@@ -21,10 +21,6 @@
     assign_public_ip: no
   register: ec2
 
-- name: Add new instance to host group
-  add_host: groups=tag_queue_rabbitmq name={{ item.PublicDnsName }}
-  with_items: '{{ ec2.instances }}'
-
 - name: mysql database
   ec2:
     key_name: baba
@@ -47,10 +43,6 @@
     assign_public_ip: no
   register: ec2
 
-- name: Add new instance to host group
-  add_host: groups=db_mysql name={{ item.PublicDnsName }}
-  with_items: '{{ ec2.instances }}'
-
 - name: web servers
   ec2:
     key_name: baba
@@ -72,10 +64,6 @@
         delete_on_termination: true
     assign_public_ip: no
   register: ec2
-
-- name: Add new instance to host group
-  add_host: groups=index_elasticsearch name={{ item.PublicDnsName }}
-  with_items: '{{ ec2.instances }}'
 
 #- name: ES load balancer
 #  command: eulb-create-lb -l "lb-port=9200, protocol=HTTP, instance-port=9200, instance-protocol=HTTP" elasticsearch -z aristotle -U http://elasticloadbalancing.cloud.aristotle.ucsb.edu:8773

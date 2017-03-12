@@ -15,3 +15,4 @@
     - role: nodejs
     - role: kal3a-tags
     - role: kal3a-search
+    - role: kal3a-web

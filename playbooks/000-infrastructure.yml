@@ -1,0 +1,13 @@
+---
+- hosts: localhost:!all
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  roles:
+    - eucalyptus-groups
+    - bastion-eucalyptus
+    - couchdb-eucalyptus
+    - elasticsearch-eucalyptus
+    - worker-eucalyptus
+    - eucalyptus

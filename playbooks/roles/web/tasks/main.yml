@@ -20,7 +20,8 @@
     - proxy_fcgi
     - expires
     - headers
+    - rewrite
+    - negotiation
   become: true
   notify:
     - restart apache2
-

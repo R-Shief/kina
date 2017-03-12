@@ -9,7 +9,7 @@ parameters:
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
-    secret: ''
+    secret: {{ symfony_secret }}
     rabbitmq_host: rabbitmq
     rabbitmq_user: user1
     rabbitmq_pass: changeme
@@ -23,6 +23,8 @@ parameters:
     elasticsearch_host: elasticsearch
     elasticsearch_port: 9200
     elasticsearch_index_name: kal3a
+    api_user: {{ api_user }}
+    api_password: {{ api_password }}
     twitter_consumer_key: {{ twitter_consumer_key }}
     twitter_consumer_secret: {{ twitter_consumer_secret }}
     twitter_access_token: {{ twitter_access_token }}
@@ -55,7 +57,7 @@ parameters:
         cloud.aristotle.ucsb.edu/sts:
             endpoint: '{service}.{region}:8773'
             port: 8773
-    kal3a_web_url: 'http://euca-169-231-235-80.eucalyptus.cloud.aristotle.ucsb.edu/api/'
+    kal3a_web_url: 'http://kal3a.r-shief.org/api/'
     supervisor_servers:
         dev:
 {% for host in groups['worker'] %}

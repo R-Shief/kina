@@ -7,6 +7,8 @@
 - name: apply common configuration to all nodes
   hosts: all
   gather_facts: no
+  vars_files:
+    - vars.yml
   remote_user: debian
 
   roles:
@@ -15,6 +17,8 @@
 - name: configure and deploy the webservers and application code
   hosts: webservers
   gather_facts: no
+  vars_files:
+    - vars.yml
   remote_user: debian
 
   roles:
@@ -25,6 +29,8 @@
 - name: deploy MySQL and configure the databases
   hosts: db_mysql
   gather_facts: no
+  vars_files:
+    - vars.yml
   remote_user: debian
 
   roles:
@@ -33,6 +39,8 @@
 - name: deploy RabbitMQ
   hosts: queue_rabbitmq
   gather_facts: no
+  vars_files:
+    - vars.yml
   remote_user: debian
 
   roles:
@@ -46,12 +54,16 @@
   hosts: db_couchdb
   gather_facts: no
   remote_user: debian
+  vars_files:
+    - vars.yml
   roles:
     - couchdb
 
 - name: deploy Elasticsearch
   hosts: index_elasticsearch
   remote_user: debian
+  vars_files:
+    - vars.yml
   roles:
     - role: debian
       elastic: true
@@ -59,14 +71,28 @@
       oracle_java_set_as_default: yes
     - role: elasticsearch
 
-- name: deploy worker
-  hosts: worker_streaming
-  remote_user: debian
+- hosts: worker_*
   vars_files:
     - vars.yml
+  remote_user: debian
   roles:
     - role: debian
       dotdeb: true
     - role: worker
+    - role: supervisor
     - role: composer
     - role: kal3a
+
+- hosts: worker_consumer
+  vars_files:
+    - vars.yml
+  remote_user: debian
+  roles:
+    - role: worker-consumer
+
+- hosts: worker_streaming
+  vars_files:
+    - vars.yml
+  remote_user: debian
+  roles:
+    - role: worker-streaming

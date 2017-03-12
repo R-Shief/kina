@@ -1,7 +1,4 @@
 ---
-- name: waiting for ssh
-  local_action: wait_for port=22 host="{{ ansible_ssh_host | default(inventory_hostname) }}" search_regex=OpenSSH
-
 - name: format devices
   filesystem: fstype=ext3 dev=/dev/vdb
   become: true
@@ -60,6 +57,15 @@
     mode: 0755
   become: true
 
+- name: service directory for couchdb
+  file:
+    state: directory
+    path: /opt/couchdb/etc/sv/log
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+
 - copy:
     content: |
       #!/bin/sh
@@ -93,7 +99,7 @@
   become: true
 
 - uri:
-    uri: http://localhost:5984/_config/admins/{{ couchdb_user }}
+    uri: http://{{ hostvars[ansible_ssh_host]['PrivateDnsName'] }}:5984/_config/admins/{{ couchdb_user }}
     method: PUT
     body_format: json
     body: '{{ couchdb_password }}'
@@ -108,7 +114,7 @@
   become: true
 
 - uri:
-    uri: http://localhost:5984/_cluster_setup
+    uri: http://{{ hostvars[ansible_ssh_host]['PrivateDnsName'] }}:5984/_cluster_setup
     method: POST
     body_format: json
     body:
@@ -136,3 +142,11 @@
 #  command: ./configure --disable-docs --disable-fauxton chdir=/home/debian/build/couchdb creates=install.mk
 #
 #- make: chdir=/home/debian/build/couchdb target=release
+
+#- cron:
+#    name: compact _global_changes
+#    user: debian
+#    job: curl -H "Content-Type: application/json" -X POST http://couchdb:5984/_global_changes/_compact -u {{ couchdb_user }}:{{ couchdb_password }}
+#    minute: 0
+#    hour: 12
+#    weekday: 3

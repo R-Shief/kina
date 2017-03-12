@@ -33,7 +33,9 @@
     KAL3A_TARGET: '{{ kal3a_target }}'
 
 # @todo temporary until we have better vhost
-- command: rm -fr /srv/kal3a/web/search
+- file:
+    state: absent
+    path: /srv/kal3a/web/search
 - command: cp -r ~/kal3a-search/dist /srv/kal3a/web/search
 
 - name: delete deployment dir

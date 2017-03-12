@@ -33,7 +33,9 @@
     KAL3A_TARGET: '{{ kal3a_target }}'
 
 # @todo temporary until we have better vhost
-- command: rm -fr /srv/kal3a/web/tags
+- file:
+    state: absent
+    path: /srv/kal3a/web/tags
 - command: cp -r ~/kal3a-tags/dist /srv/kal3a/web/tags
 
 - name: delete deployment dir

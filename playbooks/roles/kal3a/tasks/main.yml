@@ -35,8 +35,11 @@
 - name: install kal3a dependencies
   environment:
     PATH: "{{ ansible_env.PATH }}:/home/debian/bin"
-    SYMFONY_ENV: prod
+    SYMFONY_ENV: dev
   composer:
     command: install
     working_dir: /srv/kal3a
-  notify: clear kal3a cache
+    no_dev: no
+  notify:
+    - clear kal3a cache
+    - establish rabbitmq fabric

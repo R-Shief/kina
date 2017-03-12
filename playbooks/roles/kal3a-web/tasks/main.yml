@@ -1,0 +1,154 @@
+---
+- name: Session handler and cache
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - memcached
+    - php7.0-memcached
+  become: true
+
+- name: enable acl
+  mount:
+    name: /
+    src: /dev/vda1
+    opts: errors=remount-ro,acl
+    state: mounted
+    fstype: ext3
+    passno: 1
+    dump: 0
+  become: true
+
+- name: create virtual host configuration.
+  template:
+    src: templates/kal3a.conf.j2
+    dest: /etc/apache2/sites-available/kal3a.conf
+  notify: restart apache2
+  become: true
+
+- name: pools for php-fpm
+  file:
+    state: directory
+    path: /opt/php-fpm
+    owner: www-data
+    group: www-data
+    mode: 0755
+  become: true
+
+- name: logs for php-fpm
+  file:
+    state: directory
+    path: /opt/php-fpm/log
+    owner: www-data
+    group: www-data
+    mode: 0755
+  become: true
+
+- ini_file: dest=/etc/php/7.0/fpm/pool.d/www.conf
+            section=www
+            option="{{ item.option }}"
+            value="{{ item.value }}"
+            backup=yes
+  notify: restart php-fpm
+  with_items:
+    - { option: prefix, value: /opt/php-fpm }
+    - { option: pm.max_children, value: 10 }
+    - { option: request_slowlog_timeout, value: 5 }
+    - { option: slowlog, value: log/$pool.log.slow }
+  become: true
+
+- name: facl
+  acl:
+    path: /srv/kal3a/var
+    recursive: yes
+    entity: "{{ item }}"
+    etype: user
+    permissions: rwX
+    state: present
+  with_items:
+    - www-data
+    - debian
+  become: true
+
+- name: facl
+  acl:
+    path: /srv/kal3a/var
+    default: yes
+    recursive: true
+    entity: "{{ item }}"
+    etype: user
+    permissions: rwX
+    state: present
+  with_items:
+    - www-data
+    - debian
+  become: true
+
+- name: enable site
+  file:
+    state: link
+    src: /etc/apache2/sites-available/kal3a.conf
+    path: /etc/apache2/sites-enabled/kal3a.conf
+  become: true
+
+- name: update couchdb views
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/home/debian/bin"
+    SYMFONY_ENV: prod
+  command: bin/console --env=prod doctrine:couchdb:update-design-doc
+  args:
+    chdir: /srv/kal3a
+
+- name: cron couchdb enclosure ddoc
+  cron:
+    name: update enclosure couchdb ddoc
+    user: debian
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update enclosure tags
+    minute: 0
+
+- name: cron couchdb lang ddoc
+  cron:
+    name: update lang couchdb ddoc
+    user: debian
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update lang basic
+    minute: 10
+
+#- name: cron couchdb maint ddoc
+#  cron:
+#    name: update maint couchdb ddoc
+#    user: debian
+#    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update maint date
+#    minute: 10
+
+- name: cron couchdb nofollow ddoc
+  cron:
+    name: update nofollow couchdb ddoc
+    user: debian
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update nofollow tags
+    minute: 20
+
+- name: cron couchdb published ddoc
+  cron:
+    name: update published couchdb ddoc
+    user: debian
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update published timeseries
+    minute: 30
+
+- name: cron couchdb tag ddoc
+  cron:
+    name: update tag couchdb ddoc
+    user: debian
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update tag timeseries
+    minute: 40
+
+- name: cron couchdb tag_trends ddoc
+  cron:
+    name: update tag_trends couchdb ddoc
+    user: debian
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update tag_trends PT1M
+    minute: 50
+
+- name: cron cleanup deleted views
+  cron:
+    name: cleanup deleted views
+    user: debian
+    job: cd /srv/kal3a ; bin/console --env=prod doctrine:couchdb:maintenance:view-cleanup
+    weekday: 0

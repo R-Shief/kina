@@ -17,12 +17,7 @@
         volume_size: 5
         delete_on_termination: true
     assign_public_ip: no
-    wait: true
   register: ec2
-
-- name: Add new instance to host group
-  add_host: groups=worker_streaming name={{ item.PublicDnsName }}
-  with_items: '{{ ec2.instances }}'
 
 - ec2:
     key_name: baba
@@ -42,9 +37,4 @@
         volume_size: 5
         delete_on_termination: true
     assign_public_ip: no
-    wait: true
   register: ec2
-
-- name: Add new instance to host group
-  add_host: groups=worker_consumer name={{ item.PublicDnsName }}
-  with_items: '{{ ec2.instances }}'

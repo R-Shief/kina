@@ -6,3 +6,11 @@
   command: bin/console cache:clear
   args:
     chdir: /srv/kal3a
+
+- name: establish rabbitmq fabric
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/home/debian/bin"
+    SYMFONY_ENV: prod
+  command: bin/console rabbitmq:setup-fabric
+  args:
+    chdir: /srv/kal3a

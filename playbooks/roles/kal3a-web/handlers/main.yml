@@ -1,0 +1,8 @@
+---
+- name: restart apache2
+  service: name=apache2 state=restarted
+  become: true
+
+- name: restart php-fpm
+  service: name=php7.0-fpm state=restarted
+  become: true

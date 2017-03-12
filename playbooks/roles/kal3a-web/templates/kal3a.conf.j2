@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+	ServerName kal3a.r-shief.org
+
+	DocumentRoot /srv/kal3a/web
+
+    <FilesMatch \.php$>
+        SetHandler proxy:unix:/var/run/php/php7.0-fpm.sock|fcgi://dummy
+    </FilesMatch>
+
+    DocumentRoot /srv/kal3a/web
+    <Directory /srv/kal3a/web>
+        # enable the .htaccess rewrites
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
