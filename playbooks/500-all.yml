@@ -13,6 +13,7 @@
 
   roles:
     - common
+    - consul
 
 - name: configure and deploy the webservers and application code
   hosts: webservers
