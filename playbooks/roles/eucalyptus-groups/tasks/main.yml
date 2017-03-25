@@ -52,6 +52,22 @@
         from_port: 53
         to_port: 53
         cidr_ip: 10.1.3.0/24
+      # Server RPC (Default 8300). This is used by servers to handle
+      # incoming requests from other agents. TCP only.
+      - proto: tcp
+        from_port: 8300
+        to_port: 8300
+        cidr_ip: 10.1.3.0/24
+      # Serf LAN (Default 8301). This is used to handle gossip in the
+      # LAN. Required by all agents. TCP and UDP.
+      - proto: tcp
+        from_port: 8301
+        to_port: 8301
+        cidr_ip: 10.1.3.0/24
+      - proto: udp
+        from_port: 8301
+        to_port: 8301
+        cidr_ip: 10.1.3.0/24
 
 - name: security group www
   ec2_group:
