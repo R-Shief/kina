@@ -2,6 +2,9 @@
 - user:
     name: consul
     home: /opt/consul
+    system: yes
+    shell: /bin/false
+    createhome: no
   become: true
 - apt:
     name: "{{ item }}"
