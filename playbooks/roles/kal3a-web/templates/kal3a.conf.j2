@@ -4,7 +4,7 @@
 	DocumentRoot /srv/kal3a/web
 
     <FilesMatch \.php$>
-        SetHandler proxy:unix:/var/run/php/php7.0-fpm.sock|fcgi://dummy
+        SetHandler proxy:fcgi://127.0.0.1:9000
     </FilesMatch>
 
     DocumentRoot /srv/kal3a/web
