@@ -6,6 +6,7 @@
     instance_tags:
       bastion: true
       service: bastion
+      consul: true
     count_tag:
       bastion: true
     exact_count: 1

@@ -1,0 +1,82 @@
+---
+- user:
+    name: consul
+    home: /opt/consul
+  become: true
+- apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  become: true
+  with_items:
+    - git
+    - jq
+    - curl
+    - runit
+    - unzip
+- get_url:
+    url: https://checkpoint-api.hashicorp.com/v1/check/consul
+    dest: /tmp/check_consul
+- shell: cat /tmp/check_consul | jq .current_version --raw-output
+  register: check_consul
+- file:
+    path: /opt/consul
+    state: directory
+  become: true
+- get_url:
+    url: https://releases.hashicorp.com/consul/{{ check_consul.stdout }}/consul_{{ check_consul.stdout }}_linux_amd64.zip
+    dest: /tmp
+- unarchive:
+    src: /tmp/consul_{{ check_consul.stdout }}_linux_amd64.zip
+    dest: /opt/consul
+    remote_src: yes
+  become: true
+- file:
+    path: /opt/consul/consul
+    mode: a+x
+    owner: consul
+  become: true
+- file:
+    path: /etc/consul.d
+    state: directory
+  become: true
+- file:
+    path: /etc/sv/consul
+    state: directory
+  become: true
+- file:
+    path: /var/log/consul
+    owner: consul
+    state: directory
+  become: true
+- file:
+    path: /var/consul
+    owner: consul
+    state: directory
+  become: true
+- file:
+    path: /etc/sv/consul/log
+    state: directory
+  become: true
+- template:
+    src: templates/consul/run.j2
+    dest: /etc/sv/consul/run
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+- template:
+    src: templates/consul/log/run.j2
+    dest: /etc/sv/consul/log/run
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+- runit:
+    service_dir: /etc/service
+    name: consul
+    state: started
+    enabled: yes
+  become: true
+

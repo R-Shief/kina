@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Make sure to use all our CPUs, because Consul can block a scheduler thread
+export GOMAXPROCS=`nproc`
+
+# Get the public IP
+BIND=`ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }'`
+
+{% for host in groups['tag_consul_True'] %}
+CONSUL_JOIN={{ hostvars[host].PrivateIpAddress }}
+{% endfor %}
+
+exec 2>&1
+exec chpst -u consul /opt/consul/consul agent \
+  -config-dir="/etc/consul.d" \
+  -data-dir="/var/consul" \
+  -join=${CONSUL_JOIN} \
+  -bind=$BIND \
+  ${CONSUL_FLAGS}
