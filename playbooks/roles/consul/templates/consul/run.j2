@@ -6,9 +6,11 @@ export GOMAXPROCS=`nproc`
 # Get the public IP
 BIND=`ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }'`
 
-{% for host in groups['tag_consul_True'] %}
+{% if groups['consul_True'] is defined %}
+{% for host in groups['consul_True'] %}
 CONSUL_JOIN={{ hostvars[host].PrivateIpAddress }}
 {% endfor %}
+{% endif %}
 
 exec 2>&1
 exec chpst -u consul /opt/consul/consul agent \
