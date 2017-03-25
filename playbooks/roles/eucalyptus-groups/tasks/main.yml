@@ -132,6 +132,14 @@
         from_port: 9200
         to_port: 9200
         cidr_ip: 10.1.3.0/24
+      - proto: tcp
+        from_port: 9300
+        to_port: 9300
+        cidr_ip: 10.1.3.0/24
+      - proto: udp
+        from_port: 9300
+        to_port: 9300
+        cidr_ip: 10.1.3.0/24
 
 - name: security group mysql
   ec2_group:
