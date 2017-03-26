@@ -18,50 +18,58 @@
     - curl
     - runit
     - unzip
+    - python-pip
+- pip:
+    name: python-consul
+  become: true
+
+- file:
+    path: "{{ item }}"
+    state: directory
+  become: true
+  with_items:
+    - /opt/consul
+    - /etc/consul.d
+    - /etc/sv/consul
+    - /etc/sv/consul/log
+
+- file:
+    path: "{{ item }}"
+    owner: consul
+    state: directory
+  become: true
+  with_items:
+    - /var/log/consul
+    - /var/consul
+
 - get_url:
     url: https://checkpoint-api.hashicorp.com/v1/check/consul
     dest: /tmp/check_consul
+
 - shell: cat /tmp/check_consul | jq .current_version --raw-output
   register: check_consul
-- file:
-    path: /opt/consul
-    state: directory
-  become: true
+
 - get_url:
     url: https://releases.hashicorp.com/consul/{{ check_consul.stdout }}/consul_{{ check_consul.stdout }}_linux_amd64.zip
     dest: /tmp
+
 - unarchive:
     src: /tmp/consul_{{ check_consul.stdout }}_linux_amd64.zip
     dest: /opt/consul
     remote_src: yes
   become: true
+
+- file:
+    path: /tmp/consul_{{ check_consul.stdout }}_linux_amd64.zip
+    state: absent
+  become: true
+
 - file:
     path: /opt/consul/consul
     mode: a+x
     owner: consul
   become: true
-- file:
-    path: /etc/consul.d
-    state: directory
-  become: true
-- file:
-    path: /etc/sv/consul
-    state: directory
-  become: true
-- file:
-    path: /var/log/consul
-    owner: consul
-    state: directory
-  become: true
-- file:
-    path: /var/consul
-    owner: consul
-    state: directory
-  become: true
-- file:
-    path: /etc/sv/consul/log
-    state: directory
-  become: true
+
 - template:
     src: templates/consul/run.j2
     dest: /etc/sv/consul/run
@@ -69,6 +77,7 @@
     group: root
     mode: "u=rwx,g=rx,o=rx"
   become: true
+
 - template:
     src: templates/consul/log/run.j2
     dest: /etc/sv/consul/log/run
@@ -76,6 +85,8 @@
     group: root
     mode: "u=rwx,g=rx,o=rx"
   become: true
+  notify: restart consul
+
 - runit:
     service_dir: /etc/service
     name: consul
@@ -83,3 +94,34 @@
     enabled: yes
   become: true
 
+# iptables -t nat -A PREROUTING          -p udp -m udp --dport 53 -j REDIRECT --to-ports 8600
+# iptables -t nat -A PREROUTING          -p tcp -m tcp --dport 53 -j REDIRECT --to-ports 8600
+- iptables:
+    table: nat
+    chain: PREROUTING
+    protocol: "{{ item }}"
+    match: "{{ item }}"
+    destination_port: 53
+    jump: REDIRECT
+    to_ports: 8600
+  with_items:
+    - udp
+    - tcp
+  become: yes
+
+# iptables -t nat -A OUTPUT -d localhost -p udp -m udp --dport 53 -j REDIRECT --to-ports 8600
+# iptables -t nat -A OUTPUT -d localhost -p tcp -m tcp --dport 53 -j REDIRECT --to-ports 8600
+
+- iptables:
+    table: nat
+    chain: OUTPUT
+    destination: localhost
+    protocol: "{{ item }}"
+    match: "{{ item }}"
+    destination_port: 53
+    jump: REDIRECT
+    to_ports: 8600
+  with_items:
+    - udp
+    - tcp
+  become: yes

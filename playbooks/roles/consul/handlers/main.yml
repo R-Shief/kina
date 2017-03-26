@@ -1,0 +1,4 @@
+---
+- name: restart consul
+  command: sv restart consul
+  become: true

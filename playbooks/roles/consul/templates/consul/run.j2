@@ -6,16 +6,19 @@ export GOMAXPROCS=`nproc`
 # Get the public IP
 BIND=`ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }'`
 
-{% if groups['consul_True'] is defined %}
-{% for host in groups['consul_True'] %}
-CONSUL_JOIN={{ hostvars[host].PrivateIpAddress }}
-{% endfor %}
-{% endif %}
-
 exec 2>&1
 exec chpst -u consul /opt/consul/consul agent \
+{% if hostvars[inventory_hostname].group_names | select("equalto", "consul_server") | list | length > 0 %}
+  -server \
+  -bootstrap-expect {{ groups['consul_server'] | length }} \
+{% endif %}
   -config-dir="/etc/consul.d" \
   -data-dir="/var/consul" \
-  -join=${CONSUL_JOIN} \
+{% if groups['consul_server'] is defined %}
+{% for host in groups['consul_server'] %}
+  -join={{ hostvars[host].PrivateIpAddress }} \
+{% endfor %}
+{% endif %}
+  -recursor=169.231.234.30 \
   -bind=$BIND \
   ${CONSUL_FLAGS}
