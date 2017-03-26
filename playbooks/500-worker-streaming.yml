@@ -5,6 +5,7 @@
   remote_user: debian
   roles:
     - role: common
+    - role: consul
     - role: debian
       dotdeb: true
     - role: worker
