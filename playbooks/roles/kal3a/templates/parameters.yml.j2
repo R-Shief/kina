@@ -1,6 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
-    database_host: mysql
+    database_host: mysql.service.consul
     database_port: null
     database_name: kal3a
     database_user: kal3a
@@ -10,17 +10,17 @@ parameters:
     mailer_user: null
     mailer_password: null
     secret: {{ symfony_secret }}
-    rabbitmq_host: rabbitmq
+    rabbitmq_host: rabbitmq.service.consul
     rabbitmq_user: user1
     rabbitmq_pass: changeme
     rabbitmq_port: 5672
     rabbitmq_vhost: /
-    couchdb_host: couchdb
+    couchdb_host: couchdb.service.consul
     couchdb_port: 5984
     couchdb_name: kal3a
     couchdb_user: {{ couchdb_user }}
     couchdb_password: {{ couchdb_password }}
-    elasticsearch_host: elasticsearch
+    elasticsearch_host: elasticsearch.service.consul
     elasticsearch_port: 9200
     elasticsearch_index_name: kal3a
     api_user: {{ api_user }}
