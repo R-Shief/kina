@@ -19,6 +19,7 @@
     - runit
     - unzip
     - python-pip
+    - monitoring-plugins
 - pip:
     name: python-consul
   become: true
@@ -120,3 +121,15 @@
     - udp
     - tcp
   become: yes
+
+- consul:
+    check_name: Check Disk
+    check_id: check_disk
+    script: /usr/lib/nagios/plugins/check_disk -w 10% -c 5% 2>&1
+    interval: 1m
+
+- consul:
+    check_name: Check Load
+    check_id: check_load
+    script: /usr/lib/nagios/plugins/check_load -w 1,2,3 -c 2,3,4 2>&1
+    interval: 1m
