@@ -19,3 +19,6 @@
 
 - include: handlers/main.yml
 
+- consul:
+    service_name: mysql
+    service_port: 3306

@@ -150,3 +150,7 @@
 #    minute: 0
 #    hour: 12
 #    weekday: 3
+
+- consul:
+    service_name: couchdb
+    service_port: 5984

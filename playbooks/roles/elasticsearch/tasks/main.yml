@@ -23,3 +23,7 @@
     line: "network.host: {{ hostvars[ansible_ssh_host]['PrivateIpAddress'] }}"
   become: true
   notify: restart elasticsearch
+
+- consul:
+    service_name: elasticsearch
+    service_port: 9200

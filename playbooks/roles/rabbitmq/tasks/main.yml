@@ -23,3 +23,7 @@
 #  rabbitmq_parameter: component=federation name=local-username value='"user1"' state=present
 
 - include: handlers/main.yml
+
+- consul:
+    service_name: rabbitmq
+    service_port: 5672
