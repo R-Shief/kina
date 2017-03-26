@@ -60,11 +60,6 @@
   become: true
 
 - file:
-    path: /tmp/consul_{{ check_consul.stdout }}_linux_amd64.zip
-    state: absent
-  become: true
-
-- file:
     path: /opt/consul/consul
     mode: a+x
     owner: consul
