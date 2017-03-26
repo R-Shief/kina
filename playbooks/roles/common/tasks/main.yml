@@ -16,10 +16,9 @@
 - apt: upgrade=yes
   become: true
 
-# Idempotent way to build a /etc/hosts file with Ansible using your Ansible hosts inventory for a source.
-# Will include all hosts the playbook is run on.
-# Inspired from http://xmeblog.blogspot.com/2013/06/ansible-dynamicaly-update-etchosts.html
-- lineinfile: dest=/etc/hosts line='{{ hostvars[item].PrivateIpAddress }} {{hostvars[item].PrivateDnsName}} {{ hostvars[item].CustomHostname | default('') }}' state=present
-  with_items: '{{ groups[''ec2''] }}'
-  when: hostvars[item].PrivateIpAddress is defined
+- lineinfile:
+    dest: /etc/dhcp/dhclient.conf
+    line: 'supersede domain-name-servers 127.0.0.1;'
+    state: present
   become: true
+  notify: restart networking
