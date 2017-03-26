@@ -44,6 +44,7 @@
     name: bind
     description: bind group
     rules:
+      # DNS ports
       - proto: tcp
         from_port: 53
         to_port: 53
@@ -122,6 +123,15 @@
         from_port: 25672
         to_port: 25672
         cidr_ip: 10.1.3.0/24
+      # DNS ports
+      - proto: tcp
+        from_port: 53
+        to_port: 53
+        cidr_ip: 10.1.3.0/24
+      - proto: udp
+        from_port: 53
+        to_port: 53
+        cidr_ip: 10.1.3.0/24
 
 - name: security group elasticsearch
   ec2_group:
@@ -149,6 +159,15 @@
       - proto: tcp
         from_port: 3306
         to_port: 3306
+        cidr_ip: 10.1.3.0/24
+      # DNS ports
+      - proto: tcp
+        from_port: 53
+        to_port: 53
+        cidr_ip: 10.1.3.0/24
+      - proto: udp
+        from_port: 53
+        to_port: 53
         cidr_ip: 10.1.3.0/24
 
 - name: security group supervisor
