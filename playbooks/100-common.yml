@@ -4,5 +4,5 @@
     - vars.yml
   remote_user: debian
   roles:
-    - common
     - consul
+    - common
