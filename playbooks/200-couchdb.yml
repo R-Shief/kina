@@ -5,4 +5,6 @@
   vars_files:
     - vars.yml
   roles:
+    - role: consul
+    - role: common
     - couchdb
