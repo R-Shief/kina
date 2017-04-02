@@ -3,6 +3,8 @@
   hosts: index_elasticsearch
   remote_user: debian
   roles:
+    - role: consul
+    - role: common
     - role: debian
       elastic: true
     - role: ansiblebit.oracle-java
