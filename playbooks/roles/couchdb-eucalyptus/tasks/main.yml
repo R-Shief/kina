@@ -9,10 +9,11 @@
       service: couchdb
     count_tag:
       db: couchdb
-    exact_count: 1
+    exact_count: 3
     group:
       - default
       - couchdb
+      - consul
     monitoring: true
     volumes:
       - device_name: /dev/sda
