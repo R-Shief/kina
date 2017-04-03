@@ -3,19 +3,25 @@
   filesystem: fstype=ext3 dev=/dev/vdb
   become: true
 
+- name: Update apt cache if needed.
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
+  become: true
+
 - name: Add runit
-  apt: "name={{ item }} state=installed"
+  apt:
+    name: "{{ item }}"
+    state: installed
   with_items:
     - runit
     - libmozjs185-dev
   become: true
 
-- name: Update apt cache if needed.
-  apt: update_cache=yes cache_valid_time=86400
-  become: true
-
 - name: Creates directory
-  file: path=/home/debian/build state=directory
+  file:
+    path: /home/debian/build
+    state: directory
 
 - name: downloads custom couchdb deb
   get_url:
@@ -23,130 +29,101 @@
     url: https://clc.aristotle.ucsb.edu:8773/services/objectstorage/kal3a-debs/couchdb-2.0.0-2.deb
     validate_certs: no
 
-- name: mount devices
-  mount:
-    name: /opt/couchdb
-    src: /dev/vdb
-    fstype: ext3
-    state: mounted
-  become: true
-
 - name: installs custom couchdb deb
   apt:
     deb: /home/debian/build/couchdb-2.0.0-2.deb
   become: true
 
-- name: service directory for couchdb
-  file:
+- file:
+    path: "{{ item }}"
     state: directory
-    path: /opt/couchdb/etc/sv
-    owner: root
-    group: root
-    mode: 0755
   become: true
+  with_items:
+    - /etc/sv/couchdb
+    - /etc/sv/couchdb/log
 
-- name: runit
-  copy:
-    content: |
-      #!/bin/sh
-      exec 2>&1
-      exec chpst -u couchdb:couchdb env HOME=/opt/couchdb /opt/couchdb/bin/couchdb
-    dest: /opt/couchdb/etc/sv/run
-    owner: root
-    group: root
-    mode: 0755
-  become: true
-
-- name: service directory for couchdb
-  file:
-    state: directory
-    path: /opt/couchdb/etc/sv/log
-    owner: root
-    group: root
-    mode: 0755
-  become: true
-
-- copy:
-    content: |
-      #!/bin/sh
-      exec chpst -u couchdb:couchdb svlogd -tt /opt/couchdb/var/log
-    dest: /opt/couchdb/etc/sv/log/run
-    owner: root
-    group: root
-    mode: 0755
+- name: mount devices
+  mount:
+    name: /opt/couchdb/data
+    src: /dev/vdb
+    fstype: ext3
+    state: mounted
+    opts: rw,auto,async,user
   become: true
 
 - file:
-    state: link
-    src: /opt/couchdb/etc/sv
-    path: /etc/service/couchdb
+    path: /var/log/couchdb
+    owner: couchdb
+    group: couchdb
+    state: directory
   become: true
 
-- ini_file: dest=/opt/couchdb/etc/local.ini
-            section=chttpd
-            option=bind_address
-            value='{{ hostvars[ansible_ssh_host]['PrivateIpAddress'] }}'
-            backup=yes
-  notify: restart couchdb
+- file:
+    path: /opt/couchdb/data
+    owner: couchdb
+    group: couchdb
+    state: directory
   become: true
 
-- ini_file: dest=/opt/couchdb/etc/local.ini
-            section=admins
-            option='{{ couchdb_user }}'
-            value='{{ couchdb_password }}'
-            backup=yes
-  notify: restart couchdb
+- template:
+    src: templates/couchdb/run.j2
+    dest: /etc/sv/couchdb/run
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
   become: true
 
-- uri:
-    uri: http://{{ hostvars[ansible_ssh_host]['PrivateDnsName'] }}:5984/_config/admins/{{ couchdb_user }}
-    method: PUT
-    body_format: json
-    body: '{{ couchdb_password }}'
-  ignore_errors: True
-
-- ini_file: dest=/opt/couchdb/etc/local.ini
-            section=couch_httpd_auth
-            option=require_valid_user
-            value=true
-            backup=yes
-  notify: restart couchdb
+- template:
+    src: templates/couchdb/log/run.j2
+    dest: /etc/sv/couchdb/log/run
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
   become: true
 
-- uri:
-    uri: http://{{ hostvars[ansible_ssh_host]['PrivateDnsName'] }}:5984/_cluster_setup
-    method: POST
-    body_format: json
-    body:
-      action: finish_cluster
-    status_code: 201
-  ignore_errors: True
+- lineinfile:
+    path: /opt/couchdb/etc/vm.args
+    regexp: '^-name '
+    line: '-name couchdb@{{ ansible_ssh_host }}'
+  become: true
+
+- lineinfile:
+    path: /opt/couchdb/etc/vm.args
+    regexp: '^-kernel inet_dist_listen_min '
+    line: '-kernel inet_dist_listen_min 9100'
+  become: true
+
+- lineinfile:
+    path: /opt/couchdb/etc/vm.args
+    regexp: '^-kernel inet_dist_listen_max '
+    line: '-kernel inet_dist_listen_max 9200'
+  become: true
 
 
-#- name: Get software for Erlang build of CouchDB 2.0.
-#  apt: "name={{ item }} state=installed"
-#  with_items:
-#    - erlang
-#    - git
-#    - libcurl4-openssl-dev
-#    - libicu-dev
-#    - libmozjs185-dev
-#    - pkg-config
-#    - libcerf-doc
-#  become: true
-
-#- name: Clone CouchDB repository
-#  git: repo=https://github.com/apache/couchdb.git dest=/home/debian/build/couchdb version=2.0.0
+#    - name: Get software for Erlang build of CouchDB 2.0.
+#      apt: "name={{ item }} state=installed"
+#      with_items:
+#        - erlang
+#        - git
+#        - libcurl4-openssl-dev
+#        - libicu-dev
+#        - libmozjs185-dev
+#        - pkg-config
+#        - libcerf-doc
+#      become: true
 #
-#- name: Build CouchDB
-#  command: ./configure --disable-docs --disable-fauxton chdir=/home/debian/build/couchdb creates=install.mk
+#    - name: Clone CouchDB repository
+#      git: repo=https://github.com/apache/couchdb.git dest=/home/debian/build/couchdb version=2.0.0
 #
-#- make: chdir=/home/debian/build/couchdb target=release
+#    - name: Build CouchDB
+#      command: ./configure --disable-docs --disable-fauxton chdir=/home/debian/build/couchdb creates=install.mk
+#
+#    - make: chdir=/home/debian/build/couchdb target=release
 
 #- cron:
 #    name: compact _global_changes
 #    user: debian
-#    job: curl -H "Content-Type: application/json" -X POST http://couchdb:5984/_global_changes/_compact -u {{ couchdb_user }}:{{ couchdb_password }}
+#    job: curl -H "Content-Type: application/json" -X POST http://couchdb.service.consul:5984/_global_changes/_compact -u {{ couchdb_user }}:{{ couchdb_password }}
 #    minute: 0
 #    hour: 12
 #    weekday: 3
@@ -154,3 +131,28 @@
 - consul:
     service_name: couchdb
     service_port: 5984
+    tags: [ couchdb ]
+    script: /usr/lib/nagios/plugins/check_http -H localhost -p 5984 -u /kal3a --authorization={{ couchdb_user }}:{{ couchdb_password }} --expect="HTTP/1.1 200" 2>&1
+    interval: 1m
+
+- runit:
+    service_dir: /etc/service
+    name: couchdb
+    state: started
+    enabled: yes
+  become: true
+
+- uri:
+    method: PUT
+    url: http://127.0.0.1:5984/_node/couchdb@{{ ansible_ssh_host }}/_config/admins/admin
+    body: '"{{ couchdb_password }}"'
+    body_format: json
+
+- uri:
+    method: PUT
+    url: http://127.0.0.1:5984/_node/couchdb@{{ ansible_ssh_host }}/_config/chttpd/bind_address
+    body: '"0.0.0.0"'
+    body_format: json
+    user: admin
+    force_basic_auth: yes
+    password: "{{ couchdb_password }}"
