@@ -100,7 +100,11 @@
       - proto: tcp
         from_port: 4369
         to_port: 4369
-        cidr_ip: 10.1.3.0/24
+        group_name: couchdb
+      - proto: tcp
+        from_port: 9100
+        to_port: 9200
+        group_name: couchdb
 
 - name: security group rabbitmq
   ec2_group:
