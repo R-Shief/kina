@@ -1,0 +1,4 @@
+cluster.name: kina-ucsb-elasticsearch
+network.host: [_eth0_, _local_]
+discovery.zen.ping.unicast.hosts: ["10.1.3.71"]
+node.name: kina-{% for tag in hostvars[ansible_ssh_host].Tags | selectattr('Key', 'equalto', 'Name') %}{{ tag.Value }}{% endfor %}

@@ -17,10 +17,10 @@
     - elasticsearch
   become: true
 
-- lineinfile:
+- template:
+    src: templates/elasticsearch.yml.j2
     dest: /etc/elasticsearch/elasticsearch.yml
-    regexp: 'network.host'
-    line: "network.host: {{ hostvars[ansible_ssh_host]['PrivateIpAddress'] }}"
+    group: elasticsearch
   become: true
   notify: restart elasticsearch
 
