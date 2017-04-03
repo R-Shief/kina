@@ -97,54 +97,19 @@
   args:
     chdir: /srv/kal3a
 
-- name: cron couchdb enclosure ddoc
+- name: cron couchdb update views in tags ddoc
   cron:
     name: update enclosure couchdb ddoc
     user: debian
-    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update enclosure tags
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update tags
     minute: 0
 
-- name: cron couchdb lang ddoc
+- name: cron couchdb update views in timeseries ddoc
   cron:
     name: update lang couchdb ddoc
     user: debian
-    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update lang basic
-    minute: 10
-
-#- name: cron couchdb maint ddoc
-#  cron:
-#    name: update maint couchdb ddoc
-#    user: debian
-#    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update maint date
-#    minute: 10
-
-- name: cron couchdb nofollow ddoc
-  cron:
-    name: update nofollow couchdb ddoc
-    user: debian
-    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update nofollow tags
-    minute: 20
-
-- name: cron couchdb published ddoc
-  cron:
-    name: update published couchdb ddoc
-    user: debian
-    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update published timeseries
+    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update timeseries
     minute: 30
-
-- name: cron couchdb tag ddoc
-  cron:
-    name: update tag couchdb ddoc
-    user: debian
-    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update tag timeseries
-    minute: 40
-
-- name: cron couchdb tag_trends ddoc
-  cron:
-    name: update tag_trends couchdb ddoc
-    user: debian
-    job: cd /srv/kal3a ; bin/console --env=prod castle:view:update tag_trends PT1M
-    minute: 50
 
 - name: cron cleanup deleted views
   cron:
@@ -152,3 +117,6 @@
     user: debian
     job: cd /srv/kal3a ; bin/console --env=prod doctrine:couchdb:maintenance:view-cleanup
     weekday: 0
+    hour: 0
+    minute: 0
+
