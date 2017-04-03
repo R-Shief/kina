@@ -3,13 +3,13 @@
   ec2:
     key_name: baba
     instance_type: m3.2xlarge
-    image: emi-2a255279
+    image: emi-f2950446
     instance_tags:
       index: elasticsearch
       service: elasticsearch
     count_tag:
       index: elasticsearch
-    exact_count: 1
+    exact_count: 3
     group:
       - default
       - elasticsearch
@@ -18,7 +18,7 @@
       - device_name: /dev/sda
         volume_size: 15
         delete_on_termination: true
-      - device_name: /dev/vdb
+      - device_name: /dev/vdc
         volume_size: 1000
         delete_on_termination: true
     assign_public_ip: no
