@@ -9,11 +9,12 @@
 - lineinfile:
     dest: /etc/mysql/my.cnf
     regexp: 'bind-address'
-    line: "bind-address = {{ hostvars[ansible_ssh_host]['PrivateIpAddress'] }}"
+    line: "bind-address = 0.0.0.0"
   become: true
   notify: restart mysql
 
 - mysql_db: name=kal3a login_user=root state=present
+- mysql_user: name=kal3a password=kal3a host=localhost login_user=root priv=kal3a.*:ALL state=present
 - mysql_user: name=kal3a password=kal3a host=10.1.3.% login_user=root priv=kal3a.*:ALL state=present
 - mysql_user: name=kal3a password=kal3a host_all=yes login_user=root priv=kal3a.*:ALL state=present
 
@@ -22,3 +23,5 @@
 - consul:
     service_name: mysql
     service_port: 3306
+    script: /usr/lib/nagios/plugins/check_mysql -d kal3a -u kal3a -p kal3a 2>&1
+    interval: 1m
